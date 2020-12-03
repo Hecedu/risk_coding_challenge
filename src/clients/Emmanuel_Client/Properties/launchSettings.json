@@ -6,12 +6,12 @@
       "launchBrowser": true,
       "launchUrl": "http://localhost:5010/areyouthere",
       "environmentVariables": {
-        "ClientCallbackAddress": "http://144.17.48.66:5010",
-        "GameServer": "http://144.17.48.37:5000",
+        "ClientCallbackAddress": "http://localhost:5010",
+        "GameServer": "http://localhost:5000",
         "ClientName": "Emmanuel",
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
-      "applicationUrl": "http://0.0.0.0:5010"
+      "applicationUrl": "http://localhost:5010"
     },
     "Docker": {
       "commandName": "Docker",

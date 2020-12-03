@@ -4,12 +4,16 @@
     "TannerClient": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "joinserver",
+      "launchUrl": "http://localhost:5006",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "userName": "Tanner",
+        "ClientCallbackAddress": "http://localhost:5006",
+        "GameServer": "http://localhost:5000"
       },
-      "applicationUrl": "https://localhost:5007;http://localhost:5006"
+      "applicationUrl": "http://localhost:5006"
     },
+
     "Docker": {
       "commandName": "Docker",
       "launchBrowser": true,

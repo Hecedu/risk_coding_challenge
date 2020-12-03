@@ -4,11 +4,14 @@
     "Kaydon_sClient": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "weatherforecast",
+      "launchUrl": "http://localhost:5015",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+          "PlayerName": "Kaydon",
+          "GameServer": "http://localhost:5000",
+          "ClientCallbackAddress": "http://localhost:5015"
       },
-      "applicationUrl": "https://localhost:5009;http://localhost:5010"
+      "applicationUrl": "http://localhost:5015"
     },
     "Docker": {
       "commandName": "Docker",

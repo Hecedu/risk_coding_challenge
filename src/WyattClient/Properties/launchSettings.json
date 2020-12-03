@@ -5,7 +5,7 @@
       "launchBrowser": true,
       "environmentVariables": {
         "userName": "Wyatt",
-        "ClientCallbackAddress": "http://localhost:5000",
+        "ClientCallbackAddress": "http://localhost:5070",
         "GameServer": "http://localhost:5000",
         "ASPNETCORE_ENVIRONMENT": "Development"
       },

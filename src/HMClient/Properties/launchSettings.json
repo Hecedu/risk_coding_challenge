@@ -8,21 +8,18 @@
     }
   },
   "profiles": {
-    "IIS Express": {
-      "commandName": "IISExpress",
-      "launchBrowser": true,
-      "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
-      }
-    },
-    "HMClient": {
+    "LocalGame": {
       "commandName": "Project",
       "launchBrowser": true,
+      "launchUrl": "http://localhost:5320",
+      "applicationUrl": "http://localhost:5320",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
-      },
-      "applicationUrl": "https://localhost:5320;http://localhost:5321"
+        "PlayerName": "Hector",
+        "GameServer": "http://localhost:5000",
+        "ClientCallbackAddress": "http://localhost:5320"
+      }
     },
+
     "Docker": {
       "commandName": "Docker",
       "launchBrowser": true,

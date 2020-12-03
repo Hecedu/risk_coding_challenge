@@ -4,11 +4,14 @@
     "Rusty_Client": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "weatherforecast",
+      "launchUrl": "http://localhost:5012",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "PlayerName": "Rusty",
+        "GameServer": "http://localhost:5000",
+        "ClientCallbackAddress": "http://localhost:5012"
       },
-      "applicationUrl": "http://144.17.48.44:5012"
+      "applicationUrl": "http://localhost:5012"
     },
     "Docker": {
       "commandName": "Docker",

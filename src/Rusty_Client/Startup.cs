@@ -56,7 +56,7 @@ namespace Rusty_Client
             JoinServer(httpClientFactory.CreateClient(),
                 Configuration["GameServer"],
                 Configuration[ "ClientCallbackAddress"],
-                Configuration["playerName"]
+                Configuration["PlayerName"]
                 );
         }
 
