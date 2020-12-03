@@ -54,7 +54,7 @@ namespace DJClient
                 endpoints.MapControllers();
             });
 
-            var server = Configuration["ServerName"];
+            var server = Configuration["GameServer"] ?? throw new Exception("Can't find game server"); 
             var httpClient = httpClientFactory.CreateClient();
             var clientBaseAddress = Configuration["ClientCallbackAddress"];
             var playerName = Configuration["PlayerName"];

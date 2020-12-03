@@ -7,9 +7,11 @@
       "launchUrl": "",
       "applicationUrl": "http://localhost:5004",
       "environmentVariables": {
-        "GameServer": "http://144.17.48.37:5000",
-        "ClientCallbackAddress": "http://144.17.48.37:5004",
-        "PlayerName": "SampleClient1"
+        "GameServer": "http://localhost:5000",
+        "ClientCallbackAddress": "http://localhost:5004",
+        "PlayerName": "SampleClient1",
+        "joinGame": "yes",
+        "secretCode": "BazookaJoe"
       }
     },
     "Risk.LocalGame": {

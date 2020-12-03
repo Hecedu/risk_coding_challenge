@@ -7,7 +7,7 @@
       "launchUrl": "http://localhost:5010/gamestatus",
       "environmentVariables": {
         "PlayerName": "Maksad",
-        "ServerName": "http://localhost:5000",
+        "GameServer": "http://localhost:5000",
         "ClientCallbackAddress": "http://localhost:5010",
         "secretCode": "BazookaJoe",
         "ASPNETCORE_ENVIRONMENT": "Development"

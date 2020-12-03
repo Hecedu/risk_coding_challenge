@@ -33,7 +33,7 @@ namespace Maksad_Client.Pages
 
         private async Task refreshStatus(HttpClient client)
         {
-            Status = await client.GetFromJsonAsync<GameStatus>($"{config["serverName"]}/status");
+            Status = await client.GetFromJsonAsync<GameStatus>($"{config["GameServer"]}/status");
         }
 
         public GameStatus Status { get; set; }
@@ -41,7 +41,7 @@ namespace Maksad_Client.Pages
         public async Task OnPostStartGameAsync()
         {
             var client = httpClientFactory.CreateClient();
-            await client.PostAsJsonAsync($"{config["serverName"]}/startgame", new StartGameRequest { SecretCode = config["secretCode"]});
+            await client.PostAsJsonAsync($"{config["GameServer"]}/startgame", new StartGameRequest { SecretCode = config["secretCode"]});
             
             await refreshStatus(client);
         }

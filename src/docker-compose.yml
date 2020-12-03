@@ -72,22 +72,22 @@ services:
 #    depends_on:
 #    - risk.api
 
-  stuartclient:
-    hostname: stuartclient
-    image: ${DOCKER_REGISTRY-}stuartclient
-    build:
-      context: .
-      dockerfile: StuartClient/Dockerfile
-    ports:
-    - "5020:80"
-    environment:
-    - GameServer=http://risk.api
-    - ClientCallbackAddress=http://stuartclient
-    - userName=Stuart
-    networks:
-      risknet:
-    depends_on:
-    - risk.api
+#  stuartclient:
+#    hostname: stuartclient
+#    image: ${DOCKER_REGISTRY-}stuartclient
+#    build:
+#      context: .
+#      dockerfile: StuartClient/Dockerfile
+#    ports:
+#    - "5020:80"
+#    environment:
+#    - GameServer=http://risk.api
+#    - ClientCallbackAddress=http://stuartclient
+#    - userName=Stuart
+#    networks:
+#      risknet:
+#    depends_on:
+#    - risk.api
 
 
 #  tannerclient:
@@ -107,39 +107,39 @@ services:
 #    depends_on:
 #    - risk.api
 
-  wyattclient:
-    hostname: wyattclient
-    image: ${DOCKER_REGISTRY-}wyattclient
-    build:
-      context: .
-      dockerfile: WyattClient/Dockerfile
-    ports:
-    - "5030:80"
-    environment:
-    - GameServer=http://risk.api
-    - ClientCallbackAddress=http://wyattclient
-    - PlayerName=Wyatt
-    networks:
-      risknet:
-    depends_on:
-    - risk.api
-
-  brennanclient:
-    hostname: brennanclient
-    image: ${DOCKER_REGISTRY-}brennanclient
-    build:
-      context: .
-      dockerfile: BrennanClient/Dockerfile
-    ports:
-    - "5035:80"
-    environment:
-    - GameServer=http://risk.api
-    - ClientCallbackAddress=http://brennanclient
-    - PlayerName=Brennan
-    networks:
-      risknet:
-    depends_on:
-    - risk.api
+#  wyattclient:
+#    hostname: wyattclient
+#    image: ${DOCKER_REGISTRY-}wyattclient
+#    build:
+#      context: .
+#      dockerfile: WyattClient/Dockerfile
+#    ports:
+#    - "5030:80"
+#    environment:
+#    - GameServer=http://risk.api
+#    - ClientCallbackAddress=http://wyattclient
+#    - PlayerName=Wyatt
+#    networks:
+#      risknet:
+#    depends_on:
+#    - risk.api
+#
+#  brennanclient:
+#    hostname: brennanclient
+#    image: ${DOCKER_REGISTRY-}brennanclient
+#    build:
+#      context: .
+#      dockerfile: BrennanClient/Dockerfile
+#    ports:
+#    - "5035:80"
+#    environment:
+#    - GameServer=http://risk.api
+#    - ClientCallbackAddress=http://brennanclient
+#    - PlayerName=Brennan
+#    networks:
+#      risknet:
+#    depends_on:
+#    - risk.api
 
 
 #  kaydonsclient:
@@ -159,22 +159,22 @@ services:
 #    depends_on:
 #    - risk.api
 
-  emmanuel_client:
-    hostname: emmanuel_client
-    image: ${DOCKER_REGISTRY-}emmanuelclient
-    build:
-      context: .
-      dockerfile: clients/Emmanuel_Client/Dockerfile
-    ports:
-    - "5045:80"
-    environment:
-    - GameServer=http://risk.api
-    - ClientCallbackAddress=http://emmanuel_client
-    - PlayerName=Emmanuel
-    networks:
-      risknet:
-    depends_on:
-    - risk.api
+#  emmanuel_client:
+#    hostname: emmanuel_client
+#    image: ${DOCKER_REGISTRY-}emmanuelclient
+#    build:
+#      context: .
+#      dockerfile: clients/Emmanuel_Client/Dockerfile
+#    ports:
+#    - "5045:80"
+#    environment:
+#    - GameServer=http://risk.api
+#    - ClientCallbackAddress=http://emmanuel_client
+#    - PlayerName=Emmanuel
+#    networks:
+#      risknet:
+#    depends_on:
+#    - risk.api
 
 #  hmclient:
 #    hostname: hmclient
@@ -193,22 +193,22 @@ services:
 #    depends_on:
 #    - risk.api
 
-  rusty_client:
-    hostname: rusty_client
-    image: ${DOCKER_REGISTRY-}rustyclient
-    build:
-      context: .
-      dockerfile: Rusty_Client/Dockerfile
-    ports:
-    - "5055:80"
-    environment:
-    - GameServer=http://risk.api
-    - ClientCallbackAddress=http://rusty_client
-    - PlayerName=Rusty
-    networks:
-      risknet:
-    depends_on:
-    - risk.api
+#  rusty_client:
+#    hostname: rusty_client
+#    image: ${DOCKER_REGISTRY-}rustyclient
+#    build:
+#      context: .
+#      dockerfile: Rusty_Client/Dockerfile
+#    ports:
+#    - "5055:80"
+#    environment:
+#    - GameServer=http://risk.api
+#    - ClientCallbackAddress=http://rusty_client
+#    - PlayerName=Rusty
+#    networks:
+#      risknet:
+#    depends_on:
+#    - risk.api
 
   maksad_client:
     image: ${DOCKER_REGISTRY-}maksadclient

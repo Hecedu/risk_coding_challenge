@@ -8,6 +8,7 @@
       "applicationUrl": "http://localhost:5002",
       "environmentVariables": {
         "PlayerName": "DJ",
+        "GameServer": "http://localhost:5000",
         "ClientCallbackAddress": "http://localhost:5002"
       }
     },
@@ -15,11 +16,11 @@
       "commandName": "Project",
       "launchBrowser": true,
       "launchUrl": "http://localhost:5002/areyouthere",
-      "applicationUrl": "http://0.0.0.0:5002",
+      "applicationUrl": "http://localhost:5002",
       "environmentVariables": {
         "PlayerName": "DJ",
-        "ServerName": "http://144.17.10.32:5000",
-        "ClientCallbackAddress": "http://144.17.24.31:5002"
+        "ServerName": "http://localhost:5000",
+        "ClientCallbackAddress": "http://localhost:5002"
       }
     },
     "Docker": {
