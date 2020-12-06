@@ -22,7 +22,7 @@ namespace Risk.Api
         private readonly ILogger<GameRunner> logger;
         public const int MaxFailedTries = 5;
 
-        public List<GameStatus> ListGameStatus = new List<GameStatus>();
+        public List<GameStatus> GameStatusList = new List<GameStatus>();
 
         public GameRunner(Game.Game game, ILogger<GameRunner> logger)
         {
@@ -66,7 +66,11 @@ namespace Risk.Api
                             deployArmyResponse = await askForDeployLocationAsync(currentPlayer, DeploymentStatus.PreviousAttemptFailed);
                         }
                     }
+
                     logger.LogDebug($"{currentPlayer.Name} wants to deploy to {deployArmyResponse.DesiredLocation}");
+
+                    GameStatus CurrentGameStatus = game.GetGameStatus();
+                    GameStatusList.Add(CurrentGameStatus);
                 }
             }
         }
@@ -118,6 +122,9 @@ namespace Risk.Api
                                 logger.LogInformation($"{currentPlayer.Name} wants to attack from {attackingTerritory} to {defendingTerritory}");
 
                                 attackResult = game.TryAttack(currentPlayer.Token, attackingTerritory, defendingTerritory);
+
+                                GameStatus CurrentGameStatus = game.GetGameStatus();
+                                GameStatusList.Add(CurrentGameStatus);
                             }
                             catch (Exception ex)
                             {
@@ -163,6 +170,7 @@ namespace Risk.Api
             game.SetGameOver();
         }
 
+        //Keeping track of actions
         private void RemovePlayerFromGame(string token)
         {
             var player = game.RemovePlayerByToken(token) as ApiPlayer;
@@ -247,6 +255,54 @@ namespace Risk.Api
         {
             RemovePlayerFromBoard(player.Token);
             RemovePlayerFromGame(player.Token);
+        }
+
+
+
+        private async Task PlayByPlayAsync()
+        {
+            while (game.Players.Count() > 1 && game.GameState == GameState.GameOver)
+            {
+                for (int playerIndex = 0; playerIndex < game.Players.Count(); ++playerIndex)
+                {
+                    var currentPlayer = game.Players.Skip(playerIndex).First() as ApiPlayer;
+                    var PlayByPlayReponse = await askForPlayByPlayResponseAsync(currentPlayer);
+                   
+
+                    if(PlayByPlayReponse.ResponseOption == PlayByPlayOptions.BackwardOneStep)
+                    {
+
+                    }else if(PlayByPlayReponse.ResponseOption == PlayByPlayOptions.ForwardOneStep)
+                    {
+
+                    }else if (PlayByPlayReponse.ResponseOption == PlayByPlayOptions.BackwardTillStart)
+                    {
+
+                    }else if(PlayByPlayReponse.ResponseOption == PlayByPlayOptions.ForwardTillEnd)
+                    {
+
+                    }
+                    else
+                    {
+
+                    }
+
+                }
+            }
+        }
+
+
+        private async Task<PlayByPlayResponse> askForPlayByPlayResponseAsync(ApiPlayer currentPlayer)
+        {
+            var playByPlayRequest = new PlayByPlayRequest {
+                
+            };
+
+            var json = System.Text.Json.JsonSerializer.Serialize(playByPlayRequest);
+            var playByPlayResponse = (await currentPlayer.HttpClient.PostAsJsonAsync("/PlayByPlay", playByPlayRequest));
+            playByPlayResponse.EnsureSuccessStatusCode();
+            var res = await playByPlayResponse.Content.ReadFromJsonAsync<PlayByPlayResponse>();
+            return res;
         }
     }
 }

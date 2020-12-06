@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Risk.Shared
 {
-    class PlayByPlayResponse
+    public class PlayByPlayResponse
     {
         public PlayByPlayOptions ResponseOption { get; set; }
     }
