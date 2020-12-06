@@ -22,6 +22,8 @@ namespace Risk.Api
         private readonly ILogger<GameRunner> logger;
         public const int MaxFailedTries = 5;
 
+        public List<GameStatus> ListGameStatus = new List<GameStatus>();
+
         public GameRunner(Game.Game game, ILogger<GameRunner> logger)
         {
             this.game = game;
@@ -35,6 +37,10 @@ namespace Risk.Api
             await doBattle();
             await reportWinner();
         }
+
+
+        //TODo: As soon as someone deploys, record the action as GameState
+
 
         private async Task deployArmiesAsync()
         {
@@ -65,6 +71,7 @@ namespace Risk.Api
             }
         }
 
+
         private async Task<DeployArmyResponse> askForDeployLocationAsync(ApiPlayer currentPlayer, DeploymentStatus deploymentStatus)
         {
             var deployArmyRequest = new DeployArmyRequest {
@@ -79,9 +86,12 @@ namespace Risk.Api
             return r;
         }
 
+
+        //TODo: As soon as someone attacks, record the action as GameState
         private async Task doBattle()
         {
             game.StartTime = DateTime.Now;
+
             while (game.Players.Count() > 1 && game.GameState == GameState.Attacking && game.Players.Any(p=>game.PlayerCanAttack(p)))
             {
 
@@ -206,6 +216,8 @@ namespace Risk.Api
             return (playersWithNoRemaining == game.Players.Count());
         }
 
+
+        //TODo: As soon as someone gets removed, record the action as GameState
         public void RemovePlayerFromBoard(String token)
         {
             foreach (Territory territory in game.Board.Territories)

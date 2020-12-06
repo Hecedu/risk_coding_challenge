@@ -29,6 +29,8 @@ namespace Risk.SampleClient.Pages
         public int MaxCol { get; private set; }
         public ColorGenerator ColorGenerator { get; }
 
+        
+
         public async Task OnGetAsync()
         {
             Status = await httpClientFactory

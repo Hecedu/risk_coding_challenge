@@ -70,6 +70,7 @@ namespace Risk.Game
 
             if (GetPlayerRemainingArmies(playerToken) < 1)
                 return false;
+
             Territory territory;
             try
             {

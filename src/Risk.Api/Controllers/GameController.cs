@@ -60,6 +60,24 @@ namespace Risk.Api.Controllers
             return Ok(gameStatus);
         }
 
+
+        [HttpGet("PlayByPlay")]
+        public IActionResult PlayByPlayOption()
+        {
+            GameStatus gameStatus;
+
+            if (!memoryCache.TryGetValue("Status", out gameStatus))
+            {
+                gameStatus = game.GetGameStatus();
+
+                MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions();
+                cacheEntryOptions.AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(1);
+                memoryCache.Set("Status", gameStatus, cacheEntryOptions);
+            }
+
+            return Ok(gameStatus);
+        }
+
         public static Game.Game InitializeGame (int height, int width, int numOfArmies)
         {
             GameStartOptions startOptions = new GameStartOptions {
