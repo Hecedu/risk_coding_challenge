@@ -21,6 +21,7 @@ namespace Risk.Api.Controllers
     public class GameController : Controller
     {
         private Game.Game game;
+
         private IMemoryCache memoryCache;
         private readonly IHttpClientFactory clientFactory;
         private readonly IConfiguration config;
@@ -51,7 +52,6 @@ namespace Risk.Api.Controllers
             if (!memoryCache.TryGetValue("Status", out gameStatus))
             {
                 gameStatus = game.GetGameStatus();
-
                 MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions();
                 cacheEntryOptions.AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(1);
                 memoryCache.Set("Status", gameStatus, cacheEntryOptions);
@@ -100,6 +100,11 @@ namespace Risk.Api.Controllers
         [HttpPost("[action]")]
         public async Task<IActionResult> StartGame(StartGameRequest startGameRequest)
         {
+            if(game.GameState == GameState.Restarting)
+            {
+                game.StartJoining();
+            }
+
             if(game.GameState != GameState.Joining)
             {
                 return BadRequest("Game not in Joining state");
@@ -111,6 +116,22 @@ namespace Risk.Api.Controllers
             game.StartGame();
             var gameRunner = new GameRunner(game, logger);
             await gameRunner.StartGameAsync();
+            return Ok();
+        }
+        [HttpPost("[action]")]
+        public IActionResult RestartGame(StartGameRequest startGameRequest)
+        {
+            if (game.GameState != GameState.GameOver)
+            {
+                return BadRequest("Game not finished");
+            }
+            if (config["secretCode"] != startGameRequest.SecretCode)
+            {
+                return BadRequest("Secret code doesn't match, unable to start game.");
+            }
+
+            game.Restarting();
+
             return Ok();
         }
     }

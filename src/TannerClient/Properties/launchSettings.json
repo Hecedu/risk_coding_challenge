@@ -6,12 +6,24 @@
       "launchBrowser": true,
       "launchUrl": "http://localhost:5006",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development",
-        "userName": "Tanner",
-        "ClientCallbackAddress": "http://localhost:5006",
-        "GameServer": "http://localhost:5000"
+        "GameServer": "http://144.17.48.37:5000",
+        "ClientCallBackAddress": "http://144.17.118.92",
+        "PlayerName": "Tanner",
+        "ASPNETCORE_ENVIRONMENT": "Development"
       },
       "applicationUrl": "http://localhost:5006"
+    },
+    "Risk.LocalGame": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "launchUrl": "",
+      "applicationUrl": "http://localhost:5006",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "GameServer": "http://localhost:5000",
+        "ClientCallbackAddress": "http://localhost:5006",
+        "PlayerName": "Tanner"
+      }
     },
 
     "Docker": {
@@ -19,7 +31,8 @@
       "launchBrowser": true,
       "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}/weatherforecast",
       "publishAllPorts": true,
-      "useSSL": true
+      "useSSL": false,
+      "ASPNETCORE_ENVIRONMENT": "Development"
     }
   }
 }

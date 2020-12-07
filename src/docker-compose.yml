@@ -37,22 +37,22 @@ services:
     - risk.api
 
 
-  djclient:
-    hostname: djclient
-    image: ${DOCKER_REGISTRY-}djclient
-    build:
-      context: .
-      dockerfile: clients/DJClient/Dockerfile
-    ports:
-    - "5010:80"
-    environment:
-    - ServerName=http://risk.api
-    - ClientCallbackAddress=http://djclient
-    - PlayerName=DJ
-    networks:
-      risknet:
-    depends_on:
-    - risk.api
+#  djclient:
+#    hostname: djclient
+#    image: ${DOCKER_REGISTRY-}djclient
+#    build:
+#      context: .
+#      dockerfile: clients/DJClient/Dockerfile
+#    ports:
+#    - "5010:80"
+#    environment:
+#    - ServerName=http://risk.api
+#    - ClientCallbackAddress=http://djclient
+#    - PlayerName=DJ
+#    networks:
+#      risknet:
+#    depends_on:
+#    - risk.api
 
 
 #  justin_client:
@@ -90,22 +90,23 @@ services:
 #    - risk.api
 
 
-#  tannerclient:
-#    hostname: tannerclient
-#    image: ${DOCKER_REGISTRY-}tannerclient
-#    build:
-#      context: .
-#      dockerfile: TannerClient/Dockerfile
-#    ports:
-#    - "5025:80"
-#    environment:
-#    - GameServer=http://risk.api
-#    - ClientCallbackAddress=http://tannerclient
-#    - PlayerName=tanner
-#    networks:
-#      risknet:
-#    depends_on:
-#    - risk.api
+  tannerclient:
+    hostname: tannerclient
+    image: ${DOCKER_REGISTRY-}tannerclient
+    build:
+      context: .
+      dockerfile: TannerClient/Dockerfile
+    ports:
+    - "5025:80"
+    environment:
+    - GameServer=http://risk.api
+    - ClientCallbackAddress=http://tannerclient
+    - PlayerName=tanner
+    - secretCode=banana
+    networks:
+      risknet:
+    depends_on:
+    - risk.api
 
 #  wyattclient:
 #    hostname: wyattclient
@@ -176,22 +177,22 @@ services:
 #    depends_on:
 #    - risk.api
 
-#  hmclient:
-#    hostname: hmclient
-#    image: ${DOCKER_REGISTRY-}hmclient
-#    build:
-#      context: .
-#      dockerfile: HMClient/Dockerfile
-#    ports:
-#    - "5050:80"
-#    environment:
-#    - GameServer=http://risk.api
-#    - ClientCallbackAddress=http://hmclient
-#    - PlayerName=Hector
-#    networks:
-#      risknet:
-#    depends_on:
-#    - risk.api
+  hmclient:
+    hostname: hmclient
+    image: ${DOCKER_REGISTRY-}hmclient
+    build:
+      context: .
+      dockerfile: HMClient/Dockerfile
+    ports:
+    - "5050:80"
+    environment:
+    - GameServer=http://risk.api
+    - ClientCallbackAddress=http://hmclient
+    - PlayerName=Hector
+    networks:
+      risknet:
+    depends_on:
+    - risk.api
 
 #  rusty_client:
 #    hostname: rusty_client

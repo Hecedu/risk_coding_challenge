@@ -38,6 +38,7 @@ namespace Risk.Game
         public int StartingArmies { get; }
         public GameState GameState => gameState;
 
+
         private IEnumerable<Territory> createTerritories(int height, int width)
         {
             var territories = new List<Territory>();
@@ -54,6 +55,11 @@ namespace Risk.Game
         public void StartJoining()
         {
             gameState = GameState.Joining;
+        }
+
+        public void Restarting()
+        {
+            gameState = GameState.Restarting;
         }
 
         public void StartGame()
@@ -146,19 +152,30 @@ namespace Risk.Game
 
         public GameStatus GetGameStatus()
         {
+            if (gameState == GameState.Restarting)
+            {
+                var ownedTerritories = Board.Territories.Where(t => t.Owner != null);
+                foreach (var t in ownedTerritories)
+                {
+                    t.Owner = null;
+                    t.Armies = 0;
+                }
+                
+            }
+
             var playerNames = from p in playerDictionary.Values
-                              select p.Name;
+                                select p.Name;
 
             var playerStats = from p in playerDictionary.Values
-                              let territories = Board.Territories.Where(t => t.Owner == p)
-                              let armies = territories.Sum(t => t.Armies)
-                              let territoryCount = territories.Count()
-                              select new PlayerStats {
-                                  Name = p.Name,
-                                  Armies = armies,
-                                  Territories = territoryCount,
-                                  Score = armies + territoryCount * 2
-                              };
+                                let territories = Board.Territories.Where(t => t.Owner == p)
+                                let armies = territories.Sum(t => t.Armies)
+                                let territoryCount = territories.Count()
+                                select new PlayerStats {
+                                    Name = p.Name,
+                                    Armies = armies,
+                                    Territories = territoryCount,
+                                    Score = armies + territoryCount * 2
+                                };
 
             return new GameStatus(playerNames, GameState, Board.AsBoardTerritoryList(), playerStats);
         }
