@@ -21,6 +21,7 @@ namespace Risk.Api.Controllers
     public class GameController : Controller
     {
         private Game.Game game;
+        private GameRunner gameRunner;
         private IMemoryCache memoryCache;
         private readonly IHttpClientFactory clientFactory;
         private readonly IConfiguration config;
@@ -64,18 +65,7 @@ namespace Risk.Api.Controllers
         [HttpGet("PlayByPlay")]
         public IActionResult PlayByPlayOption()
         {
-            GameStatus gameStatus;
-
-            if (!memoryCache.TryGetValue("Status", out gameStatus))
-            {
-                gameStatus = game.GetGameStatus();
-
-                MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions();
-                cacheEntryOptions.AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(1);
-                memoryCache.Set("Status", gameStatus, cacheEntryOptions);
-            }
-
-            return Ok(gameStatus);
+            return Ok(game.GameStatusList);
         }
 
         public static Game.Game InitializeGame (int height, int width, int numOfArmies)

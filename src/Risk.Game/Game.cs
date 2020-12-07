@@ -8,6 +8,10 @@ namespace Risk.Game
 {
     public class Game
     {
+        public IEnumerable<GameStatus> GameStatusList => gameStatusList.ToArray();
+
+        //Private and not mutable
+        private readonly List<GameStatus> gameStatusList = new List<GameStatus>();
         public Game(GameStartOptions startOptions)
         {
             Board = new Board(createTerritories(startOptions.Height, startOptions.Width));
@@ -164,6 +168,13 @@ namespace Risk.Game
             return new GameStatus(playerNames, GameState, Board.AsBoardTerritoryList(), playerStats);
         }
 
+        //Take Snapshot of the game
+        public void TakeGameSnapshot()
+        {
+            GameStatus CurrentGameStatus = GetGameStatus();
+            gameStatusList.Add(CurrentGameStatus);
+        }
+
         public int GetNumPlacedArmies(IPlayer player)
         {
             return Board.Territories
@@ -244,5 +255,7 @@ namespace Risk.Game
             defendingTerritory.Armies = attackingTerritory.Armies - 1;
             attackingTerritory.Armies = attackingTerritory.Armies - defendingTerritory.Armies;
         }
+
+
     }
 }
