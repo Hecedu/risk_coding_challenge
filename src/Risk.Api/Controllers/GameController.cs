@@ -62,7 +62,7 @@ namespace Risk.Api.Controllers
         }
 
 
-        [HttpGet("PlayByPlay")]
+        [HttpGet("playByPlay")]
         public IActionResult PlayByPlayOption()
         {
             return Ok(game.GameStatusList);
