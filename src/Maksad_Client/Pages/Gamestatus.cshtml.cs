@@ -15,35 +15,35 @@ namespace Maksad_Client.Pages
     public class GameStatusModel : PageModel
     {
         private readonly IHttpClientFactory httpClientFactory;
-        private readonly IConfiguration config;
-        
+        private readonly IConfiguration configuration;
 
-        public GameStatusModel(IHttpClientFactory httpClientFactory, IConfiguration config)
+        public GameStatusModel(IHttpClientFactory httpClientFactory, IConfiguration configuration)
         {
             this.httpClientFactory = httpClientFactory;
-            this.config = config;
+            this.configuration = configuration;
         }
+
+        public GameStatus Status { get; set; }
+        public int MaxRow { get; private set; }
+        public int MaxCol { get; private set; }
 
 
         public async Task OnGetAsync()
         {
-            var client = httpClientFactory.CreateClient();
-            await refreshStatus(client);
+            Status = await httpClientFactory
+                .CreateClient()
+                .GetFromJsonAsync<GameStatus>($"{configuration["GameServer"]}/status");
+            MaxRow = Status.Board.Max(t => t.Location.Row);
+            MaxCol = Status.Board.Max(t => t.Location.Column);
         }
 
-        private async Task refreshStatus(HttpClient client)
-        {
-            Status = await client.GetFromJsonAsync<GameStatus>($"{config["GameServer"]}/status");
-        }
-
-        public GameStatus Status { get; set; }
-
-        public async Task OnPostStartGameAsync()
+        public async Task<IActionResult> OnPostStartGameAsync()
         {
             var client = httpClientFactory.CreateClient();
-            await client.PostAsJsonAsync($"{config["GameServer"]}/startgame", new StartGameRequest { SecretCode = config["secretCode"]});
-            
-            await refreshStatus(client);
+            Task.Run(() =>
+                client.PostAsJsonAsync($"{configuration["GameServer"]}/startgame", new StartGameRequest { SecretCode = configuration["secretCode"] })
+            );
+            return new RedirectToPageResult("GameStatus");
         }
     }
 }
