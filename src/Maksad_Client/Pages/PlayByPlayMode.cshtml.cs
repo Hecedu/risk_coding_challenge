@@ -34,7 +34,6 @@ namespace Maksad_Client.Pages
             this.httpClientFactory = httpClientFactory;
             this.configuration = configuration;
             this.memoryCache = memoryCache;
-           
         }
 
         public GameStatus Status { get; set; }
@@ -55,24 +54,31 @@ namespace Maksad_Client.Pages
                 .CreateClient()
                 .GetFromJsonAsync<GameStatus>($"{configuration["GameServer"]}/status");*/
 
-            
+            //Check if it exists in the cache
+            List<GameStatus> GameStatusList;
 
-
-             var GameStatusList = await httpClientFactory
+            if (memoryCache.TryGetValue("Status", out GameStatusList))
+            {
+                CurrentStatus = GameStatusList[(int)HttpContext.Session.GetInt32(ListIndex)];
+            }
+            else
+            {
+                GameStatusList = await httpClientFactory
                 .CreateClient()
                 .GetFromJsonAsync<List<GameStatus>>($"{configuration["GameServer"]}/playByPlay");
 
 
-            ViewData["CurrentGameStatus"] = GameStatusList[0];
-            CurrentStatus = GameStatusList[0];
-            MaxRow = CurrentStatus.Board.Max(t => t.Location.Row);
-            MaxCol = CurrentStatus.Board.Max(t => t.Location.Column);
+                CurrentStatus = GameStatusList[0];
 
-            MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions();
-            cacheEntryOptions.AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(120);
-            memoryCache.Set("Status", GameStatusList, cacheEntryOptions);
-            HttpContext.Session.SetInt32(ListIndex, 0);
-            
+                MaxRow = CurrentStatus.Board.Max(t => t.Location.Row);
+                MaxCol = CurrentStatus.Board.Max(t => t.Location.Column);
+
+
+                MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions();
+                cacheEntryOptions.AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(120);
+                memoryCache.Set("Status", GameStatusList, cacheEntryOptions);
+                HttpContext.Session.SetInt32(ListIndex, 0);
+            }
         }
 
 
@@ -92,7 +98,7 @@ namespace Maksad_Client.Pages
             if(action == "forwardOne")
             {   
                 CurrentIndex++;
-                ViewData["CurrentGameStatus"] = GameStatusList[CurrentIndex];
+                CurrentStatus = GameStatusList[CurrentIndex];
                 HttpContext.Session.SetInt32(ListIndex, CurrentIndex);
             }
             else if (action == "forwardEnd")
@@ -124,7 +130,7 @@ namespace Maksad_Client.Pages
                         }
 
                         GameStatusList.Find(delegate (GameStatus i) { return i. == value; });*/
-            return RedirectToPage("PlayByPlayMode", CurrentStatus);
+            return RedirectToPage();
         }
 
         public async Task<IActionResult> StartGameAsync()

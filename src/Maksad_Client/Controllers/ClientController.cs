@@ -7,6 +7,7 @@ using System.Linq;
 using System.Collections.Generic;
 using Risk.Shared;
 
+
 namespace Maksad_Client.Controllers
 {
     public class ClientController : Controller
