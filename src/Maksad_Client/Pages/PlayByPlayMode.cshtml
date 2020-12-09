@@ -7,6 +7,11 @@
     ViewData["Title"] = "Maksad Client";
 }
 
+@{
+    var CurrentGameState = (GameStatus)ViewData["CurrentGameStatus"];
+}
+
+
 <style>
     .location {
         font-size: 10pt;
@@ -32,7 +37,7 @@
     }
 </style>
 
-<h2>Game State: @Model.Status.GameState</h2>
+<h2>Game State: @CurrentGameState.GameState</h2>
 
 
 
@@ -55,7 +60,7 @@
         <td>Armies</td>
         <td>Score</td>
         </tr>
-        @foreach (var p in Model.Status.PlayerStats.OrderByDescending(p => p.Score))
+        @foreach (var p in CurrentGameState.PlayerStats.OrderByDescending(p => p.Score))
         {
             <tr>
                 <td>@p.Name</td>
@@ -77,7 +82,7 @@
             <tr>
                 @for (var col = 0; col <= Model.MaxCol; col++)
                 {
-                    var cell = Model.Status.Board.First(t => t.Location == new Location(row, col));
+                    var cell = CurrentGameState.Board.First(t => t.Location == new Location(row, col));
 
                     <td class="cell">
                         <div class="location">@cell.Location</div>

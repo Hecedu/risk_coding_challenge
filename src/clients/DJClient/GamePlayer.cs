@@ -10,8 +10,6 @@ namespace DJClient
     {
         public IPlayer Player{ get; set; }
 
-
-
         public DeployArmyResponse DeployArmy(DeployArmyRequest deployArmyRequest)
         {
 

@@ -2,12 +2,16 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using Microsoft.AspNetCore.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Risk.Shared;
+using Maksad_Client.Models;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Maksad_Client.Pages
 {
@@ -15,11 +19,22 @@ namespace Maksad_Client.Pages
     {
         private readonly IHttpClientFactory httpClientFactory;
         private readonly IConfiguration configuration;
+        private readonly IMemoryCache memoryCache;
+        public PlayByPlayModel playByPlayModel;
 
-        public PlayByPlayModeModel(IHttpClientFactory httpClientFactory, IConfiguration configuration)
+        /*public PlayByPlayModeModel(IHttpClientFactory httpClientFactory, IConfiguration configuration, PlayByPlayModel playByPlayModel)
         {
             this.httpClientFactory = httpClientFactory;
             this.configuration = configuration;
+            this.playByPlayModel = playByPlayModel;
+        }*/
+
+        public PlayByPlayModeModel(IHttpClientFactory httpClientFactory, IConfiguration configuration, IMemoryCache memoryCache)
+        {
+            this.httpClientFactory = httpClientFactory;
+            this.configuration = configuration;
+            this.memoryCache = memoryCache;
+           
         }
 
         public GameStatus Status { get; set; }
@@ -27,42 +42,89 @@ namespace Maksad_Client.Pages
 
         public GameStatus CurrentStatus { get; set; }
 
-        public List<GameStatus> GameStatusList = new List<GameStatus>();
+        //public List<GameStatus> GameStatusList = new List<GameStatus>();
 
         public int MaxRow { get; private set; }
         public int MaxCol { get; private set; }
 
-        public int ListIndex { get; set; }
+        public const string ListIndex = "Counter";
 
         public async Task OnGetAsync()
         {
-            Status = await httpClientFactory
+            /*Status = await httpClientFactory
                 .CreateClient()
-                .GetFromJsonAsync<GameStatus>($"{configuration["GameServer"]}/status");
+                .GetFromJsonAsync<GameStatus>($"{configuration["GameServer"]}/status");*/
+
+            
 
 
-            GameStatusList = await httpClientFactory
+             var GameStatusList = await httpClientFactory
                 .CreateClient()
                 .GetFromJsonAsync<List<GameStatus>>($"{configuration["GameServer"]}/playByPlay");
 
-            MaxRow = Status.Board.Max(t => t.Location.Row);
-            MaxCol = Status.Board.Max(t => t.Location.Column);
+
+            ViewData["CurrentGameStatus"] = GameStatusList[0];
+            CurrentStatus = GameStatusList[0];
+            MaxRow = CurrentStatus.Board.Max(t => t.Location.Row);
+            MaxCol = CurrentStatus.Board.Max(t => t.Location.Column);
+
+            MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions();
+            cacheEntryOptions.AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(120);
+            memoryCache.Set("Status", GameStatusList, cacheEntryOptions);
+            HttpContext.Session.SetInt32(ListIndex, 0);
+            
         }
 
 
-        public async Task OnPostPlayByPlayAsync(string action)
+        public IActionResult OnPostPlayByPlayAsync(string action)
         {
-           /*Implement  
-            forwardOne,
-            backwardOne,
-            forwardEnd,
-            backwardStart*/
+            /*Implement  
+             forwardOne,
+             backwardOne,
+             forwardEnd,
+             backwardStart*/
 
-            foreach (var gameStatus in GameStatusList.Select((x, i) => new { Value = x, Index = i }))
+
+            var GameStatusList = memoryCache.Get<List<GameStatus>>("Status");
+            int CurrentIndex = (int) HttpContext.Session.GetInt32(ListIndex);
+            /* var GameStatusList = playByPlayModel.GameStatusList;
+             var indexCounter = playByPlayModel.indexCounter;*/
+            if(action == "forwardOne")
+            {   
+                CurrentIndex++;
+                ViewData["CurrentGameStatus"] = GameStatusList[CurrentIndex];
+                HttpContext.Session.SetInt32(ListIndex, CurrentIndex);
+            }
+            else if (action == "forwardEnd")
             {
+                CurrentIndex = GameStatusList.Count - 1;
+                CurrentStatus = GameStatusList[CurrentIndex];
                 
+                HttpContext.Session.SetInt32(ListIndex, CurrentIndex);
+            }
+            else if (action == "backwardOne")
+            {   
+                CurrentIndex--;
+                CurrentStatus = GameStatusList[CurrentIndex];
+                
+                HttpContext.Session.SetInt32(ListIndex, CurrentIndex);
+            }else if (action == "backwardStart")
+            {
+                CurrentIndex = 0;
+                CurrentStatus = GameStatusList[CurrentIndex];
+                HttpContext.Session.SetInt32(ListIndex, CurrentIndex);
             }
 
+            /*
+
+
+                        foreach (var gameStatus in GameStatusList.Select((x, i) => new { Value = x, Index = CurrentIndex }))
+                        {
+                            Status = gameStatus;
+                        }
+
+                        GameStatusList.Find(delegate (GameStatus i) { return i. == value; });*/
+            return RedirectToPage("PlayByPlayMode", CurrentStatus);
         }
 
         public async Task<IActionResult> StartGameAsync()

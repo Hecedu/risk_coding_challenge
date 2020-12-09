@@ -35,6 +35,10 @@ namespace Maksad_Client
             services.AddControllers();
             services.AddHttpClient();
             services.AddRazorPages();
+            services.AddMemoryCache();
+            services.AddSession(options => {
+                options.IdleTimeout = TimeSpan.FromMinutes(5);
+            });
             //services.AddSingleton<IPlayer>(new ClientPlayer { Name = "DJ" });
         }
 
@@ -50,6 +54,8 @@ namespace Maksad_Client
             app.UseRouting();
 
             app.UseAuthorization();
+
+            app.UseSession();
 
             app.UseEndpoints(endpoints =>
             {
