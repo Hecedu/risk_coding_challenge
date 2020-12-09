@@ -11,7 +11,7 @@ namespace Risk.Game
         public IEnumerable<GameStatus> GameStatusList => gameStatusList.ToArray();
 
         //Private and not mutable
-        private readonly List<GameStatus> gameStatusList = new List<GameStatus>();
+        private List<GameStatus> gameStatusList = new List<GameStatus>();
         public Game(GameStartOptions startOptions)
         {
             Board = new Board(createTerritories(startOptions.Height, startOptions.Width));
@@ -165,14 +165,15 @@ namespace Risk.Game
                                   Score = armies + territoryCount * 2
                               };
 
-            return new GameStatus(playerNames, GameState, Board.AsBoardTerritoryList(), playerStats);
+            return new GameStatus(playerNames, GameState, Board.AsBoardTerritoryList().ToArray(), playerStats);
         }
 
         //Take Snapshot of the game
-        public void TakeGameSnapshot()
+        public void TakeGameSnapshot(string PlayerAction)
         {
-            GameStatus CurrentGameStatus = GetGameStatus();
-            gameStatusList.Add(CurrentGameStatus);
+            GameStatus gameStatus = GetGameStatus();
+            gameStatus.PlayerActionDescription = PlayerAction;
+            gameStatusList.Add(gameStatus);
         }
 
         public int GetNumPlacedArmies(IPlayer player)

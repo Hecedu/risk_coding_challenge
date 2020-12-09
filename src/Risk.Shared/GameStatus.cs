@@ -14,6 +14,8 @@ namespace Risk.Shared
         public GameState GameState { get; set; }
         public IEnumerable<BoardTerritory> Board { get; set; }
 
+        public string PlayerActionDescription { get; set; }
+
         public GameStatus()
         {
             Players = new List<string>();

@@ -60,6 +60,8 @@ namespace Maksad_Client.Pages
             if (memoryCache.TryGetValue("Status", out GameStatusList))
             {
                 CurrentStatus = GameStatusList[(int)HttpContext.Session.GetInt32(ListIndex)];
+                MaxRow = CurrentStatus.Board.Max(t => t.Location.Row);
+                MaxCol = CurrentStatus.Board.Max(t => t.Location.Column);
             }
             else
             {
@@ -109,11 +111,14 @@ namespace Maksad_Client.Pages
                 HttpContext.Session.SetInt32(ListIndex, CurrentIndex);
             }
             else if (action == "backwardOne")
-            {   
-                CurrentIndex--;
-                CurrentStatus = GameStatusList[CurrentIndex];
-                
-                HttpContext.Session.SetInt32(ListIndex, CurrentIndex);
+            {
+                if (CurrentIndex != 0)
+                {
+                    CurrentIndex--;
+                    CurrentStatus = GameStatusList[CurrentIndex];
+
+                    HttpContext.Session.SetInt32(ListIndex, CurrentIndex);
+                }
             }else if (action == "backwardStart")
             {
                 CurrentIndex = 0;
