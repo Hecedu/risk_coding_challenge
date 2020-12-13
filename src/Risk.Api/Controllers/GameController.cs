@@ -52,6 +52,10 @@ namespace Risk.Api.Controllers
             if (!memoryCache.TryGetValue("Status", out gameStatus))
             {
                 gameStatus = game.GetGameStatus();
+                if(gameStatus.GameState == GameState.Restarting)
+                {
+                    game.StartJoining();
+                }
                 MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions();
                 cacheEntryOptions.AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(1);
                 memoryCache.Set("Status", gameStatus, cacheEntryOptions);

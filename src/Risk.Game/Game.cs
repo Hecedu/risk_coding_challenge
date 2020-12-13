@@ -160,21 +160,22 @@ namespace Risk.Game
                     t.Owner = null;
                     t.Armies = 0;
                 }
-                
             }
 
             var playerNames = from p in playerDictionary.Values
                                 select p.Name;
 
             var playerStats = from p in playerDictionary.Values
-                                let territories = Board.Territories.Where(t => t.Owner == p)
-                                let armies = territories.Sum(t => t.Armies)
-                                let territoryCount = territories.Count()
-                                select new PlayerStats {
-                                    Name = p.Name,
-                                    Armies = armies,
-                                    Territories = territoryCount,
-                                    Score = armies + territoryCount * 2
+                              let territories = Board.Territories.Where(t => t.Owner == p)
+                              let continentBonus = Board.GetContinentBonus(territories)
+                              let armies = territories.Sum(t => t.Armies)
+                              let territoryCount = territories.Count()
+                              select new PlayerStats {
+                                  Name = p.Name,
+                                  Armies = armies,
+                                  Territories = territoryCount,
+                                  Score = armies + territoryCount * 2 + continentBonus,
+                                  ContinentBonus = continentBonus
                                 };
 
             return new GameStatus(playerNames, GameState, Board.AsBoardTerritoryList(), playerStats);

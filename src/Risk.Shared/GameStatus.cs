@@ -35,5 +35,6 @@ namespace Risk.Shared
         public int Armies { get; set; }
         public int Territories { get; set; }
         public int Score { get; set; }
+        public int ContinentBonus { get; set; }
     }
 }
