@@ -6,9 +6,10 @@
       "launchBrowser": true,
       "launchUrl": "http://localhost:5006",
       "environmentVariables": {
-        "GameServer": "http://144.17.48.37:5000",
-        "ClientCallBackAddress": "http://144.17.118.92",
-        "PlayerName": "Tanner",
+        "GameServer": "http://localhost:5000",
+        "ClientCallBackAddress": "http://localhost:5006",
+        "PlayerName": "tanner",
+        "secretCode": "BazookaJoe",
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
       "applicationUrl": "http://localhost:5006"
