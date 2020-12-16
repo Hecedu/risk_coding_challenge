@@ -50,9 +50,6 @@ namespace Maksad_Client.Pages
 
         public async Task OnGetAsync()
         {
-            /*Status = await httpClientFactory
-                .CreateClient()
-                .GetFromJsonAsync<GameStatus>($"{configuration["GameServer"]}/status");*/
 
             //Check if it exists in the cache
             List<GameStatus> GameStatusList;
@@ -77,7 +74,7 @@ namespace Maksad_Client.Pages
 
 
                 MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions();
-                cacheEntryOptions.AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(120);
+                cacheEntryOptions.AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(360);
                 memoryCache.Set("Status", GameStatusList, cacheEntryOptions);
                 HttpContext.Session.SetInt32(ListIndex, 0);
             }
@@ -95,8 +92,7 @@ namespace Maksad_Client.Pages
 
             var GameStatusList = memoryCache.Get<List<GameStatus>>("Status");
             int CurrentIndex = (int) HttpContext.Session.GetInt32(ListIndex);
-            /* var GameStatusList = playByPlayModel.GameStatusList;
-             var indexCounter = playByPlayModel.indexCounter;*/
+        
             if(action == "forwardOne")
             {   
                 CurrentIndex++;
@@ -126,15 +122,6 @@ namespace Maksad_Client.Pages
                 HttpContext.Session.SetInt32(ListIndex, CurrentIndex);
             }
 
-            /*
-
-
-                        foreach (var gameStatus in GameStatusList.Select((x, i) => new { Value = x, Index = CurrentIndex }))
-                        {
-                            Status = gameStatus;
-                        }
-
-                        GameStatusList.Find(delegate (GameStatus i) { return i. == value; });*/
             return RedirectToPage();
         }
 

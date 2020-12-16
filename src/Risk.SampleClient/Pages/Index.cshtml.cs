@@ -29,15 +29,26 @@ namespace Risk.SampleClient.Pages
         public int MaxCol { get; private set; }
         public ColorGenerator ColorGenerator { get; }
 
-        
 
-        public async Task OnGetAsync()
+
+        /*        public async Task OnGetAsync()
+                {
+                    Status = await httpClientFactory
+                        .CreateClient()
+                        .GetFromJsonAsync<GameStatus>($"{configuration["GameServer"]}/status");
+                    MaxRow = Status.Board.Max(t => t.Location.Row);
+                    MaxCol = Status.Board.Max(t => t.Location.Column);
+                }*/
+
+        
+        public async Task<IActionResult> OnGetAsync()
         {
-            Status = await httpClientFactory
-                .CreateClient()
-                .GetFromJsonAsync<GameStatus>($"{configuration["GameServer"]}/status");
-            MaxRow = Status.Board.Max(t => t.Location.Row);
-            MaxCol = Status.Board.Max(t => t.Location.Column);
+
+            string url = "http://localhost:5050/JoinGame";
+
+            System.Uri uri = new System.Uri(url);
+
+            return Redirect(uri.ToString());
         }
 
         public async Task<IActionResult> OnPostStartGameAsync()

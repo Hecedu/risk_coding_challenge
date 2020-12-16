@@ -1,0 +1,154 @@
+﻿@page "/JoinGame"
+@using Risk.Shared
+@model JoinGame.Pages.JoinGame
+@{
+    ViewData["Title"] = "Home page";
+}
+
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+
+@if (Model.Status.GameState != GameState.GameOver)
+{
+    <meta http-equiv="refresh" content="8">
+}
+
+
+<style>
+
+    @@import url('https://fonts.googleapis.com/css?family=Montserrat:100,400&display=swap');
+
+
+    @@keyframes kahoot {
+        25% {
+            background: #41c4de;
+        }
+
+        50% {
+            background: #8cc73f;
+        }
+
+        75% {
+            background: #f3d333;
+        }
+
+        100% {
+            background: #f78e56;
+        }
+    }
+
+    body {
+        background: #42c4de;
+        animation: kahoot 4s infinite;
+        animation-direction: alternate;
+        font-family: 'Montserrat', sans-serif;
+    }
+
+    button {
+        width: 238px;
+        height: 50px;
+        border: 0px;
+        margin-left: auto;
+        margin-right: auto;
+        display: block;
+        transition: 0.3s;
+        background-color: #333333;
+        color: white;
+        font-family: 'Montserrat', sans-serif;
+        font-size: 20px;
+        font-weight: 700;
+        border-radius: 3px;
+        cursor: pointer;
+        text-align: center;
+    }
+
+    button::hover{
+        color:red;
+    }
+
+    input:focus {
+        border: 2px black solid;
+    }
+
+    img {
+        width: 255px;
+        height: 89.9851px;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        filter: invert(99%) sepia(95%) saturate(0%) hue-rotate(33deg) brightness(104%) contrast(101%);
+    }
+
+    input + button {
+        margin-top: 8px;
+    }
+
+
+    .player{
+        color: black;
+        font-size: large;
+        font-display: block;
+    }
+</style>
+
+
+
+
+<br>
+<br>
+<br>
+<div id="top">
+    <br><br><br><br>
+    <img src="https://riskodds.com/assets/images/Risk_logo.png"></img>
+    <br>
+
+</div>
+<br>
+<br>
+
+
+@*<script>
+    window.addEventListener("DOMContentLoaded", event => {
+        const audio = document.querySelector("audio");
+        audio.volume = 0.2;
+        audio.play();
+    });
+</script>*@
+
+
+<div class="playerStats" >
+
+   @* <audio loop autoplay>
+        <source src="https://drive.google.com/file/d/10Hgpk3T8WziAlcL9B16iljQcn_8y309U/view?usp=sharing" type="audio/filetype" />
+    </audio>*@
+
+    <embed name="GoodEnough" src="/Content/hero.mp3" loop="true" hidden="true" autostart="true">
+
+    <table cellpadding="2px, 10px">
+        <thead>
+
+            </tr>
+            @foreach (var p in Model.Status.PlayerStats.OrderByDescending(p => p.Score))
+            {
+                <tr>
+                    <td class="player">@p.Name</td>
+                </tr>
+            }
+    </table>
+</div>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<form method="post" asp-page-handler="StartGame">
+    <button type="submit">Start Game</button>
+</form>
+
+
+
+
+

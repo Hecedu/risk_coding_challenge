@@ -10,14 +10,14 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Configuration;
 using Risk.Shared;
 
-namespace Maksad_Client.Pages
+namespace JoinGame.Pages
 {
-    public class GameStatusModel : PageModel
+    public class JoinGame : PageModel
     {
         private readonly IHttpClientFactory httpClientFactory;
         private readonly IConfiguration configuration;
 
-        public GameStatusModel(IHttpClientFactory httpClientFactory, IConfiguration configuration)
+        public JoinGame(IHttpClientFactory httpClientFactory, IConfiguration configuration)
         {
             this.httpClientFactory = httpClientFactory;
             this.configuration = configuration;
@@ -37,24 +37,13 @@ namespace Maksad_Client.Pages
             MaxCol = Status.Board.Max(t => t.Location.Column);
         }
 
-        /*
-                public async Task<IActionResult> OnGetAsync()
-                {
-
-                    string url = "http://localhost:5050/JoinGame";
-
-                    System.Uri uri = new System.Uri(url);
-
-                    return Redirect(uri.ToString());
-                }
-        */
         public async Task<IActionResult> OnPostStartGameAsync()
         {
             var client = httpClientFactory.CreateClient();
             Task.Run(() =>
                 client.PostAsJsonAsync($"{configuration["GameServer"]}/startgame", new StartGameRequest { SecretCode = configuration["secretCode"] })
             );
-            return new RedirectToPageResult("GameStatus");
+            return new RedirectToPageResult("Visualizer");
         }
     }
 }
