@@ -67,10 +67,6 @@ namespace Risk.Game
             gameState = GameState.Joining;
         }
 
-        public void Restarting()
-        {
-            gameState = GameState.Restarting;
-        }
 
         public void StartGame()
         {

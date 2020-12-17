@@ -74,7 +74,8 @@
             <td>Player Name</td>
             <td>Territories</td>
             <td>Armies</td>
-            <td>Score</td>
+            <td>ContinentBonus</td>
+            <td>FinalScore</td>
             </tr>
             @foreach (var p in Model.CurrentStatus.PlayerStats.OrderByDescending(p => p.Score))
             {
@@ -82,6 +83,7 @@
                     <td>@p.Name</td>
                     <td>@p.Territories</td>
                     <td>@p.Armies</td>
+                    <td>@p.ContinentBonus</td>
                     <td>@p.Score</td>
                 </tr>
             }

@@ -70,16 +70,6 @@ namespace Visualizer.Pages
 
             return RedirectToPage("JoinGame");
         }
-
-
-       /* public async Task<IActionResult> GameOver()
-        {
-            gameOverRequest = await httpClientFactory
-               .CreateClient()
-               .GetFromJsonAsync<GameOverRequest>($"{configuration["GameServer"]}/GameOverStats");
-
-            return RedirectToPage("Visualizer");
-        }*/
-
+      
     }
 }

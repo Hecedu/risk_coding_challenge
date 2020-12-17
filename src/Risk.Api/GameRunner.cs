@@ -22,7 +22,7 @@ namespace Risk.Api
         private readonly ILogger<GameRunner> logger;
         public const int MaxFailedTries = 5;
 
-        
+
 
         public GameRunner(Game.Game game, ILogger<GameRunner> logger)
         {
@@ -67,12 +67,12 @@ namespace Risk.Api
                             deployArmyResponse = await askForDeployLocationAsync(currentPlayer, DeploymentStatus.PreviousAttemptFailed);
                         }
                     }
-                    
+
                     var message = $"{currentPlayer.Name}  deployed to {deployArmyResponse.DesiredLocation}";
 
                     logger.LogDebug(message);
 
-                    
+
                     //Record the GameStatus****************************
                     game.TakeGameSnapshot(message);
                 }
@@ -101,105 +101,105 @@ namespace Risk.Api
             game.StartTime = DateTime.Now;
             string message;
 
-            while (game.Players.Count() > 1 && game.GameState == GameState.Attacking && game.Players.Any(p=>game.PlayerCanAttack(p)))
             while (game.Players.Count() > 1 && game.GameState == GameState.Attacking && game.Players.Any(p => game.PlayerCanAttack(p)))
-            {
-                var consecutivePacifistTurns = 0;
-
-                for (int i = 0; i < game.Players.Count() && game.Players.Count() > 1; i++)
+                while (game.Players.Count() > 1 && game.GameState == GameState.Attacking && game.Players.Any(p => game.PlayerCanAttack(p)))
                 {
-                    var currentPlayer = game.Players.Skip(i).First() as ApiPlayer;
-                    if (game.PlayerCanAttack(currentPlayer))
+                    var consecutivePacifistTurns = 0;
+
+                    for (int i = 0; i < game.Players.Count() && game.Players.Count() > 1; i++)
                     {
-                        var failedTries = 0;
-
-                        TryAttackResult attackResult = new TryAttackResult { AttackInvalid = false };
-                        Territory attackingTerritory = null;
-                        Territory defendingTerritory = null;
-
-                        logger.LogInformation($"Asking {currentPlayer.Name} what action they want to perform...");
-                        var actionResponse = await askForActionAsync(currentPlayer, ActionStatus.PreviousActionRequestFailed);
-                        if (actionResponse.userAction == UserAction.Attack)
+                        var currentPlayer = game.Players.Skip(i).First() as ApiPlayer;
+                        if (game.PlayerCanAttack(currentPlayer))
                         {
-                            consecutivePacifistTurns = 0;
-                            do
-                            {
-                                logger.LogInformation($"Asking {currentPlayer.Name} where they want to attack...");
+                            var failedTries = 0;
 
-                                var beginAttackResponse = await askForAttackLocationAsync(currentPlayer, BeginAttackStatus.PreviousAttackRequestFailed);
-                                try
+                            TryAttackResult attackResult = new TryAttackResult { AttackInvalid = false };
+                            Territory attackingTerritory = null;
+                            Territory defendingTerritory = null;
+
+                            logger.LogInformation($"Asking {currentPlayer.Name} what action they want to perform...");
+                            var actionResponse = await askForActionAsync(currentPlayer, ActionStatus.PreviousActionRequestFailed);
+                            if (actionResponse.userAction == UserAction.Attack)
+                            {
+                                consecutivePacifistTurns = 0;
+                                do
                                 {
-                                    attackingTerritory = game.Board.GetTerritory(beginAttackResponse.From);
-                                    defendingTerritory = game.Board.GetTerritory(beginAttackResponse.To);
+                                    logger.LogInformation($"Asking {currentPlayer.Name} where they want to attack...");
 
-                                message = $"{currentPlayer.Name} attacked from {attackingTerritory} to {defendingTerritory}";
-                                logger.LogInformation(message);
+                                    var beginAttackResponse = await askForAttackLocationAsync(currentPlayer, BeginAttackStatus.PreviousAttackRequestFailed);
+                                    try
+                                    {
+                                        attackingTerritory = game.Board.GetTerritory(beginAttackResponse.From);
+                                        defendingTerritory = game.Board.GetTerritory(beginAttackResponse.To);
 
-                                attackResult = game.TryAttack(currentPlayer.Token, attackingTerritory, defendingTerritory);
+                                        message = $"{currentPlayer.Name} attacked from {attackingTerritory} to {defendingTerritory}";
+                                        logger.LogInformation(message);
 
-                                //Record the Game Status *****************************
-                                game.TakeGameSnapshot(message);
-                            }
-                            catch (Exception ex)
-                            {
-                                attackResult = new TryAttackResult { AttackInvalid = true, Message=ex.Message };
-                            }
-                            if (attackResult.AttackInvalid)
-                            {
-                                message = ($"Invalid attack request! {currentPlayer.Name} from {attackingTerritory} to {defendingTerritory} ");
-                                game.TakeGameSnapshot(message);
+                                        attackResult = game.TryAttack(currentPlayer.Token, attackingTerritory, defendingTerritory);
 
-                                failedTries++;
-                                if (failedTries == MaxFailedTries)
+                                        //Record the Game Status *****************************
+                                        game.TakeGameSnapshot(message);
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        attackResult = new TryAttackResult { AttackInvalid = true, Message = ex.Message };
+                                    }
+                                    if (attackResult.AttackInvalid)
+                                    {
+                                        message = ($"Invalid attack request! {currentPlayer.Name} from {attackingTerritory} to {defendingTerritory} ");
+                                        game.TakeGameSnapshot(message);
+
+                                        failedTries++;
+                                        if (failedTries == MaxFailedTries)
+                                        {
+                                            BootPlayerFromGame(currentPlayer);
+                                            i--;
+                                            break;
+                                        }
+                                    }
+                                } while (attackResult.AttackInvalid);
+
+                                while (attackResult.CanContinue)
                                 {
-                                    BootPlayerFromGame(currentPlayer);
-                                    i--;
-                                    break;
+                                    var continueResponse = await askContinueAttackingAsync(currentPlayer, attackingTerritory, defendingTerritory);
+                                    if (continueResponse.ContinueAttacking)
+                                    {
+                                        message = "Keep attacking!";
+                                        logger.LogInformation(message);
+                                        attackResult = game.TryAttack(currentPlayer.Token, attackingTerritory, defendingTerritory);
+                                        game.TakeGameSnapshot(message);
+                                    }
+                                    else
+                                    {
+                                        logger.LogInformation("run away!");
+                                        break;
+                                    }
                                 }
-                            }
-                        } while (attackResult.AttackInvalid);
-
-                        while (attackResult.CanContinue)
-                        {
-                            var continueResponse = await askContinueAttackingAsync(currentPlayer, attackingTerritory, defendingTerritory);
-                            if (continueResponse.ContinueAttacking)
-                            {
-                                message = "Keep attacking!";
-                                logger.LogInformation(message);
-                                attackResult = game.TryAttack(currentPlayer.Token, attackingTerritory, defendingTerritory);
-                                game.TakeGameSnapshot(message);
                             }
                             else
                             {
-                                logger.LogInformation("run away!");
-                                break;
+                                message = ($"{currentPlayer.Name} cannot attack.");
+                                game.TakeGameSnapshot(message);
                             }
                         }
+
+
                     }
-                    else
-                    {
-                        message = ($"{currentPlayer.Name} cannot attack.");
-                        game.TakeGameSnapshot(message);
-                    }
+
+                    message = "Game Over";
+                    logger.LogInformation(message);
+                    game.SetGameOver();
+                    game.TakeGameSnapshot(message);
+
                 }
 
-
-            }
-
-            message = "Game Over";
-            logger.LogInformation(message);
-            game.SetGameOver();
-            game.TakeGameSnapshot(message);
-
         }
-
-       
         private void RemovePlayerFromGame(string token)
         {
             var player = game.RemovePlayerByToken(token) as ApiPlayer;
             removedPlayers.Add(player);
 
-            var  message = ($"{player.Name} was removed from game");
+            var message = ($"{player.Name} was removed from game");
             game.TakeGameSnapshot(message);
         }
 
@@ -210,8 +210,8 @@ namespace Risk.Api
                 Status = actionStatus
             };
             return await (await player.HttpClient.PostAsJsonAsync("/beginAction", actionRequest))
-                   .EnsureSuccessStatusCode()
-                   .Content.ReadFromJsonAsync<ActionResponse>();
+                    .EnsureSuccessStatusCode()
+                    .Content.ReadFromJsonAsync<ActionResponse>();
         }
         private async Task<BeginAttackResponse> askForAttackLocationAsync(ApiPlayer player, BeginAttackStatus beginAttackStatus)
         {
@@ -249,7 +249,7 @@ namespace Risk.Api
 
             foreach (ApiPlayer currentPlayer in game.Players)
             {
-                var response = await(currentPlayer.HttpClient.PostAsJsonAsync("/gameOver", gameOverRequest));
+                var response = await (currentPlayer.HttpClient.PostAsJsonAsync("/gameOver", gameOverRequest));
             }
 
             return gameOverRequest;
@@ -263,7 +263,7 @@ namespace Risk.Api
         }
 
 
-        
+
         public void RemovePlayerFromBoard(String token)
         {
             foreach (Territory territory in game.Board.Territories)
@@ -297,5 +297,6 @@ namespace Risk.Api
             var message = $"{player.Name} was booted from the game! BYE...";
             game.TakeGameSnapshot(message);
         }
+        
     }
 }

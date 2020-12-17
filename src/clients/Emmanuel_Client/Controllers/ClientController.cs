@@ -61,14 +61,6 @@ namespace Emmanuel_Client.Controllers
             return createAttackResponse(beginAttackRequest);
         }
 
-        [HttpPost("continueAttacking")]
-        public ContinueAttackResponse ContinueAttack([FromBody] ContinueAttackRequest continueAttackRequest)
-        {
-            ContinueAttackResponse response = new ContinueAttackResponse();
-            response.ContinueAttacking = true;
-
-            return response;
-        }
 
         [HttpPost("gameOver")]
         public IActionResult GameOver([FromBody] GameOverRequest gameOverRequest)
@@ -148,6 +140,52 @@ namespace Emmanuel_Client.Controllers
             }
             
             return new DeployArmyResponse { DesiredLocation = location };
+        }
+
+
+        //The next two functions handle pacifism randomly.
+        [HttpPost("beginAction")]
+        public ActionResponse BeginAction([FromBody] ActionRequest actionRequest)
+        {
+            return createActionResponse(actionRequest);
+        }
+        private ActionResponse createActionResponse(ActionRequest actionRequest)
+        {
+            Random rnd = new Random();
+            ActionResponse response = new ActionResponse();
+            if (rnd.Next(1, 3) == 1)
+            {
+                response.userAction = UserAction.Attack;
+            }
+            else
+            {
+                response.userAction = UserAction.Pacifism;
+            }
+            return response;
+
+        }
+
+
+        //The next two functions handle continue attacking randomly.
+        [HttpPost("continueAttacking")]
+        public ContinueAttackResponse ContinueAttack([FromBody] ContinueAttackRequest continueAttackRequest)
+        {
+            return createContinueAttackResponse(continueAttackRequest);
+        }
+        private ContinueAttackResponse createContinueAttackResponse(ContinueAttackRequest continueAttackRequest)
+        {
+            Random rnd = new Random();
+            ContinueAttackResponse response = new ContinueAttackResponse();
+            if (rnd.Next(1, 3) == 1)
+            {
+                response.ContinueAttacking = false;
+            }
+            else
+            {
+                response.ContinueAttacking = true;
+            }
+            return response;
+
         }
     }
 }

@@ -59,7 +59,7 @@ namespace Emmanuel_Client
             //var httpClient = httpClientFactory.CreateClient();
             //var clientBaseAddress = app.ServerFeatures.Get<IServerAddressesFeature>().Addresses.ToArray()[1];
 
-            JoinServer(httpClientFactory.CreateClient(), Configuration["GameServer"], Configuration["ClientCallbackAddress"], Configuration["PlayerName"]);
+            JoinServer(httpClientFactory.CreateClient(), Configuration["GameServer"], Configuration["ClientCallbackAddress"], Configuration["ClientName"]);
         }
 
         private async Task JoinServer(HttpClient httpClient, string serverName, string clientBaseAddress, string clientName)

@@ -178,21 +178,5 @@ namespace Risk.Api.Controllers
 
             return Ok();
         }
-        [HttpPost("[action]")]
-        public IActionResult RestartGame(StartGameRequest startGameRequest)
-        {
-            if (game.GameState != GameState.GameOver)
-            {
-                return BadRequest("Game not finished");
-            }
-            if (config["secretCode"] != startGameRequest.SecretCode)
-            {
-                return BadRequest("Secret code doesn't match, unable to start game.");
-            }
-
-            game.Restarting();
-
-            return Ok();
-        }
     }
 }

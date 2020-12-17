@@ -43,11 +43,7 @@ namespace DJClient.Controllers
             return gamePlayer.DecideBeginAttack(beginAttackRequest);
         }
 
-        [HttpPost("continueAttacking")]
-        public ContinueAttackResponse ContinueAttack([FromBody] ContinueAttackRequest continueAttackRequest)
-        {
-            return gamePlayer.DecideContinueAttackResponse(continueAttackRequest);
-        }
+     
 
         [HttpPost("gameOver")]
         public IActionResult GameOver([FromBody] GameOverRequest gameOverRequest)
@@ -61,5 +57,52 @@ namespace DJClient.Controllers
         {
             return gameOver;
         }
+
+        //The next two functions handle pacifism randomly.
+        [HttpPost("beginAction")]
+        public ActionResponse BeginAction([FromBody] ActionRequest actionRequest)
+        {
+            return createActionResponse(actionRequest);
+        }
+        private ActionResponse createActionResponse(ActionRequest actionRequest)
+        {
+            Random rnd = new Random();
+            ActionResponse response = new ActionResponse();
+            if (rnd.Next(1, 3) == 1)
+            {
+                response.userAction = UserAction.Attack;
+            }
+            else
+            {
+                response.userAction = UserAction.Pacifism;
+            }
+            return response;
+
+        }
+
+
+        //The next two functions handle continue attacking randomly.
+        [HttpPost("continueAttacking")]
+        public ContinueAttackResponse ContinueAttack([FromBody] ContinueAttackRequest continueAttackRequest)
+        {
+            return createContinueAttackResponse(continueAttackRequest);
+        }
+        private ContinueAttackResponse createContinueAttackResponse(ContinueAttackRequest continueAttackRequest)
+        {
+            Random rnd = new Random();
+            ContinueAttackResponse response = new ContinueAttackResponse();
+            if (rnd.Next(1, 3) == 1)
+            {
+                response.ContinueAttacking = false;
+            }
+            else
+            {
+                response.ContinueAttacking = true;
+            }
+            return response;
+
+        }
+
+
     }
 }
