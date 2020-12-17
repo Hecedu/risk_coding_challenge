@@ -6,6 +6,7 @@
         Joining,
         Deploying,
         Attacking,
-        GameOver
+        GameOver,
+        Restarting
     }
 }

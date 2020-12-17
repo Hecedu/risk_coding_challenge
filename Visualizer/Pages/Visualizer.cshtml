@@ -2,7 +2,7 @@
 @using Risk.Shared
 @model Visualizer.Pages.Visualizer
 @{
-    ViewData["Title"] = "Home page";
+    ViewData["Title"] = "Visualizer";
 }
 
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
@@ -12,6 +12,8 @@
 {
     <meta http-equiv="refresh" content="1">
 }
+
+
 <style>
     .location {
         font-size: 10pt;
@@ -40,10 +42,18 @@
 <h2>
     Game State: @Model.Status.GameState</h3>
 
-    @if (@Model.Status.GameState == Risk.Shared.GameState.Joining)
+    @if (@Model.Status.GameState == Risk.Shared.GameState.GameOver)
     {
-        <form method="post" asp-page-handler="StartGame">
-            <button type="submit">Start Game</button>
+        <form method="get">
+            <button type="submit" asp-page="./PlayByPlay">View Game Step By Step</button>
+        </form>
+    }
+
+
+    @if (Model.Status.GameState == Risk.Shared.GameState.GameOver)
+    {
+        <form method="post" asp-page-handler="RestartGame">
+            <button type="submit">Restart</button>
         </form>
     }
 

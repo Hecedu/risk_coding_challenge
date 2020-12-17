@@ -37,13 +37,25 @@ namespace Visualizer.Pages
             MaxCol = Status.Board.Max(t => t.Location.Column);
         }
 
-        public async Task<IActionResult> OnPostStartGameAsync()
+
+        public async Task<IActionResult> OnPostRestartGame()
         {
             var client = httpClientFactory.CreateClient();
-            Task.Run(() =>
+            await Task.Run(() =>
+                client.PostAsJsonAsync($"{configuration["GameServer"]}/restartgame", new StartGameRequest { SecretCode = configuration["secretCode"] })
+            );
+            StartGame();
+            
+            return RedirectToPage("Visualizer");
+        }
+
+        public async Task StartGame()
+        {
+            var client = httpClientFactory.CreateClient();
+            await Task.Run(() =>
                 client.PostAsJsonAsync($"{configuration["GameServer"]}/startgame", new StartGameRequest { SecretCode = configuration["secretCode"] })
             );
-            return new RedirectToPageResult("Visualizer");
         }
+
     }
 }

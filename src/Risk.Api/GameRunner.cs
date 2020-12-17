@@ -68,7 +68,7 @@ namespace Risk.Api
                         }
                     }
                     
-                    var message = $"{currentPlayer.Name} wants to deploy to {deployArmyResponse.DesiredLocation}";
+                    var message = $"{currentPlayer.Name}  deployed to {deployArmyResponse.DesiredLocation}";
 
                     logger.LogDebug(message);
 
@@ -124,7 +124,7 @@ namespace Risk.Api
                                 attackingTerritory = game.Board.GetTerritory(beginAttackResponse.From);
                                 defendingTerritory = game.Board.GetTerritory(beginAttackResponse.To);
 
-                                message = $"{currentPlayer.Name} wants to attack from {attackingTerritory} to {defendingTerritory}";
+                                message = $"{currentPlayer.Name} attacked from {attackingTerritory} to {defendingTerritory}";
                                 logger.LogInformation(message);
 
                                 attackResult = game.TryAttack(currentPlayer.Token, attackingTerritory, defendingTerritory);
@@ -138,7 +138,9 @@ namespace Risk.Api
                             }
                             if (attackResult.AttackInvalid)
                             {
-                                logger.LogError($"Invalid attack request! {currentPlayer.Name} from {attackingTerritory} to {defendingTerritory} ");
+                                message = ($"Invalid attack request! {currentPlayer.Name} from {attackingTerritory} to {defendingTerritory} ");
+                                game.TakeGameSnapshot(message);
+
                                 failedTries++;
                                 if (failedTries == MaxFailedTries)
                                 {
@@ -168,7 +170,8 @@ namespace Risk.Api
                     }
                     else
                     {
-                        logger.LogWarning($"{currentPlayer.Name} cannot attack.");
+                        message = ($"{currentPlayer.Name} cannot attack.");
+                        game.TakeGameSnapshot(message);
                     }
                 }
 
@@ -187,6 +190,9 @@ namespace Risk.Api
         {
             var player = game.RemovePlayerByToken(token) as ApiPlayer;
             removedPlayers.Add(player);
+
+            var  message = ($"{player.Name} was removed from game");
+            game.TakeGameSnapshot(message);
         }
 
         private async Task<BeginAttackResponse> askForAttackLocationAsync(ApiPlayer player, BeginAttackStatus beginAttackStatus)

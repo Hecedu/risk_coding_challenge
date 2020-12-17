@@ -33,8 +33,6 @@ namespace JoinGame.Pages
             Status = await httpClientFactory
                 .CreateClient()
                 .GetFromJsonAsync<GameStatus>($"{configuration["GameServer"]}/status");
-            MaxRow = Status.Board.Max(t => t.Location.Row);
-            MaxCol = Status.Board.Max(t => t.Location.Column);
         }
 
         public async Task<IActionResult> OnPostStartGameAsync()

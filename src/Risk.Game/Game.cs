@@ -55,6 +55,12 @@ namespace Risk.Game
             return territories;
         }
 
+
+        public void Restarting()
+        {
+            gameState = GameState.Restarting;
+        }
+
         public void StartJoining()
         {
             gameState = GameState.Joining;
@@ -151,6 +157,18 @@ namespace Risk.Game
 
         public GameStatus GetGameStatus()
         {
+
+            if (gameState == GameState.Restarting)
+            {
+                var ownedTerritories = Board.Territories.Where(t => t.Owner != null);
+                foreach (var t in ownedTerritories)
+                {
+                    t.Owner = null;
+                    t.Armies = 0;
+                }
+
+            }
+
             var playerNames = from p in playerDictionary.Values
                               select p.Name;
 
