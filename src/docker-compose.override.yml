@@ -14,14 +14,14 @@ services:
       - "80"
 
 
-  djclient:
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=http://+:80
-    ports:
-      - "80"
-    volumes:
-      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+#  djclient:
+#    environment:
+#      - ASPNETCORE_ENVIRONMENT=Development
+#      - ASPNETCORE_URLS=http://+:80
+#    ports:
+#      - "80"
+#    volumes:
+#      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
 
  # justin_client:
  #   environment:
@@ -50,14 +50,14 @@ services:
 #    volumes:
 #      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
 
- # tannerclient:
- #   environment:
- #     - ASPNETCORE_ENVIRONMENT=Development
- #     - ASPNETCORE_URLS=http://+:80
- #   ports:
- #     - "80"
- #   volumes:
- #     - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+  tannerclient:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:80
+    ports:
+      - "80"
+    volumes:
+      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
 
 #  wyattclient:
 #    environment:
@@ -80,15 +80,15 @@ services:
 #      - "80"
 
 
-#  hmclient:
-#    environment:
-#      - ASPNETCORE_ENVIRONMENT=Development
-#      - ASPNETCORE_URLS=https://+:443;http://+:80
-#    ports:
-#      - "80"
-#      - "443"
-#    volumes:
-#      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+  hmclient:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=https://+:443;http://+:80
+    ports:
+      - "80"
+      - "443"
+    volumes:
+      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
 #
 #  rusty_client:
 #    environment:

@@ -1,0 +1,91 @@
+﻿@page
+@model TannerClient.Pages.IndexModel
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+<h2>Game State: @Model.Status.GameState</h2>
+@if (@Model.Status.GameState == Risk.Shared.GameState.Joining || Model.Status.GameState == Risk.Shared.GameState.Restarting)
+{
+    <form method="post" asp-page-handler="StartGame">
+        <button type="submit">Start Game</button>
+    </form>
+}
+
+@if (Model.Status.GameState == Risk.Shared.GameState.GameOver)
+{
+    <form method="post" asp-page-handler="RestartGame">
+        <button type="submit">Restart</button>
+    </form>
+}
+
+@if (Model.Status.GameState != Risk.Shared.GameState.GameOver)
+{
+    <meta http-equiv="refresh" content="1">
+}
+
+<style>
+    .location {
+        font-size: 10pt;
+        width: 48%;
+        float: left;
+    }
+
+    .name {
+        font-size: 14pt;
+        color: blue
+    }
+
+    .armies {
+        color: red;
+        font-weight: bold;
+        width: 48%;
+        float: right;
+        text-align: right;
+    }
+
+    .cell {
+        min-width: 25px;
+    }
+</style>
+
+<div class="playerStats">
+    <table>
+        <thead>
+        <td>Player Name</td>
+        <td>Territories</td>
+        <td>Armies</td>
+        <td>Score</td>
+        <td>ContinentBonus</td>
+        </tr>
+        @foreach (var p in Model.Status.PlayerStats.OrderByDescending(p => p.Score))
+        {
+            <tr>
+                <td>@p.Name</td>
+                <td>@p.Territories</td>
+                <td>@p.Armies</td>
+                <td>@p.Score</td>
+                <td>@p.ContinentBonus</td>
+            </tr>
+        }
+    </table>
+</div>
+
+<div class="grid-container">
+    <table border="1px" cellpadding="10px">
+        @for (var row = 0; row <= Model.rows; row++)
+        {
+            <tr>
+                @for (var col = 0; col <= Model.columns; col++)
+                {
+                    var cell = Model.Status.Board.First(t => t.Location == new Risk.Shared.Location(row, col));
+
+                    <td class="cell">
+                        <div class="location">@cell.Location</div>
+                        <div class="armies">@cell.Armies</div>
+                        <div class="name">@cell.OwnerName</div>
+                    </td>
+                }
+            </tr>
+        }
+    </table>
+</div>
+

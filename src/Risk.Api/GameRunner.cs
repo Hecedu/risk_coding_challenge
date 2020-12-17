@@ -102,7 +102,9 @@ namespace Risk.Api
             string message;
 
             while (game.Players.Count() > 1 && game.GameState == GameState.Attacking && game.Players.Any(p=>game.PlayerCanAttack(p)))
+            while (game.Players.Count() > 1 && game.GameState == GameState.Attacking && game.Players.Any(p => game.PlayerCanAttack(p)))
             {
+                var consecutivePacifistTurns = 0;
 
                 for (int i = 0; i < game.Players.Count() && game.Players.Count() > 1; i++)
                 {
@@ -111,18 +113,24 @@ namespace Risk.Api
                     {
                         var failedTries = 0;
 
-                        TryAttackResult attackResult = new TryAttackResult {  AttackInvalid = false} ;
+                        TryAttackResult attackResult = new TryAttackResult { AttackInvalid = false };
                         Territory attackingTerritory = null;
                         Territory defendingTerritory = null;
-                        do
-                        {
-                            logger.LogInformation($"Asking {currentPlayer.Name} where they want to attack...");
 
-                            var beginAttackResponse = await askForAttackLocationAsync(currentPlayer, BeginAttackStatus.PreviousAttackRequestFailed);
-                            try
+                        logger.LogInformation($"Asking {currentPlayer.Name} what action they want to perform...");
+                        var actionResponse = await askForActionAsync(currentPlayer, ActionStatus.PreviousActionRequestFailed);
+                        if (actionResponse.userAction == UserAction.Attack)
+                        {
+                            consecutivePacifistTurns = 0;
+                            do
                             {
-                                attackingTerritory = game.Board.GetTerritory(beginAttackResponse.From);
-                                defendingTerritory = game.Board.GetTerritory(beginAttackResponse.To);
+                                logger.LogInformation($"Asking {currentPlayer.Name} where they want to attack...");
+
+                                var beginAttackResponse = await askForAttackLocationAsync(currentPlayer, BeginAttackStatus.PreviousAttackRequestFailed);
+                                try
+                                {
+                                    attackingTerritory = game.Board.GetTerritory(beginAttackResponse.From);
+                                    defendingTerritory = game.Board.GetTerritory(beginAttackResponse.To);
 
                                 message = $"{currentPlayer.Name} attacked from {attackingTerritory} to {defendingTerritory}";
                                 logger.LogInformation(message);
@@ -195,6 +203,16 @@ namespace Risk.Api
             game.TakeGameSnapshot(message);
         }
 
+        //pacifism 
+        private async Task<ActionResponse> askForActionAsync(ApiPlayer player, ActionStatus actionStatus)
+        {
+            var actionRequest = new ActionRequest {
+                Status = actionStatus
+            };
+            return await (await player.HttpClient.PostAsJsonAsync("/beginAction", actionRequest))
+                   .EnsureSuccessStatusCode()
+                   .Content.ReadFromJsonAsync<ActionResponse>();
+        }
         private async Task<BeginAttackResponse> askForAttackLocationAsync(ApiPlayer player, BeginAttackStatus beginAttackStatus)
         {
             var beginAttackRequest = new BeginAttackRequest {

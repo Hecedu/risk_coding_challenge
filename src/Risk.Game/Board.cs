@@ -57,6 +57,34 @@ namespace Risk.Game
             return Territories.Where(t => neighborLocations.Contains(t.Location));
         }
 
+        public IEnumerable<Territory> GetContinent(Territory territory)
+        {
+            var l = territory.Location;
+            var neighborLocations = new[] {
+                new Location(l.Row+1, l.Column),
+                new Location(l.Row, l.Column-1),
+                new Location(l.Row, l.Column+1),
+                new Location(l.Row-1, l.Column),
+            };
+            return Territories.Where(t => neighborLocations.Contains(t.Location));
+        }
+
+        public int GetContinentBonus(IEnumerable<Territory> territories)
+        {
+            var bonus = 0;
+            foreach(var territory in territories)
+            {
+                var continent = GetContinent(territory);
+                var continentTerritories = territories.Where(t => continent.Contains(t));
+                if(continentTerritories.Count() >=2)
+                {
+                    bonus += 1;
+                }               
+            }
+
+            return bonus;
+        }
+
         public bool AttackTargetLocationIsValid(Location attackSource, Location attackTarget)
         {
             int rowDistance = Math.Abs(attackSource.Row - attackTarget.Row);

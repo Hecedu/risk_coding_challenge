@@ -1,0 +1,68 @@
+﻿@page "/GameStatus"
+@using Risk.Shared
+@using System.Collections.Generic
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@model Risk.HMClient.Pages.GameStatusModel
+@{
+    int playerCount = 1;
+}
+
+<head>
+    <meta http-equiv="refresh" content="5">
+</head>
+
+<h3>Game State: @Model.Status.GameState</h3>
+
+@if (@Model.Status.GameState == Risk.Shared.GameState.Joining)
+{
+    <form method="post" asp-page-handler="StartGame">
+        <input type="text" name="server" value="@Model.ServerName" />
+        <input type="text" name="secretCode" value="HectoritoBonito" />
+        <button type="submit">Start Game</button>
+    </form>
+}
+
+<table cellpadding="5px">
+    <tr>
+        <th>Player</th>
+        <th>Territories</th>
+        <th>Armies</th>
+        <th>Score</th>
+    </tr>
+    @foreach (var player in Model.Status.PlayerStats.OrderByDescending(p => p.Score))
+    {
+        <tr>
+            <td>@player.Name</td>
+            <td align="right">@player.Territories</td>
+            <td align="right">@player.Armies</td>
+            <td align="right">@player.Score</td>
+        </tr>
+    }
+</table>
+
+<div class="grid-container">
+    @{
+
+    }
+    <table border="1px" cellpadding="10px">
+        @for (var row = 0; row <= 7; row++)
+        {
+            <tr>
+                @for (var col = 0; col <= 7; col++)
+                {
+                    <td class="cell">
+                        @{
+                            var cell = Model.Status.Board.First(t => t.Location == new Location(row, col));
+                        }
+                        <div class="location">@cell.Location</div>
+                        <div class="armies">@cell.Armies</div>
+                        <div class="name">@cell.OwnerName</div>
+                    </td>
+                }
+            </tr>
+        }
+    </table>
+</div>
+
+
+
