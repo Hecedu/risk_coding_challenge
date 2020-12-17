@@ -82,8 +82,9 @@ namespace Risk.Api
         private async Task doBattle()
         {
             game.StartTime = DateTime.Now;
-            while (game.Players.Count() > 1 && game.GameState == GameState.Attacking && game.Players.Any(p=>game.PlayerCanAttack(p)))
+            while (game.Players.Count() > 1 && game.GameState == GameState.Attacking && game.Players.Any(p => game.PlayerCanAttack(p)))
             {
+                var consecutivePacifistTurns = 0;
 
                 for (int i = 0; i < game.Players.Count() && game.Players.Count() > 1; i++)
                 {
@@ -92,54 +93,72 @@ namespace Risk.Api
                     {
                         var failedTries = 0;
 
-                        TryAttackResult attackResult = new TryAttackResult {  AttackInvalid = false} ;
+                        TryAttackResult attackResult = new TryAttackResult { AttackInvalid = false };
                         Territory attackingTerritory = null;
                         Territory defendingTerritory = null;
-                        do
+
+                        logger.LogInformation($"Asking {currentPlayer.Name} what action they want to perform...");
+                        var actionResponse = await askForActionAsync(currentPlayer, ActionStatus.PreviousActionRequestFailed);
+                        if (actionResponse.userAction == UserAction.Attack)
                         {
-                            logger.LogInformation($"Asking {currentPlayer.Name} where they want to attack...");
-
-                            var beginAttackResponse = await askForAttackLocationAsync(currentPlayer, BeginAttackStatus.PreviousAttackRequestFailed);
-                            try
+                            consecutivePacifistTurns = 0;
+                            do
                             {
-                                attackingTerritory = game.Board.GetTerritory(beginAttackResponse.From);
-                                defendingTerritory = game.Board.GetTerritory(beginAttackResponse.To);
+                                logger.LogInformation($"Asking {currentPlayer.Name} where they want to attack...");
 
-                                logger.LogInformation($"{currentPlayer.Name} wants to attack from {attackingTerritory} to {defendingTerritory}");
-
-                                attackResult = game.TryAttack(currentPlayer.Token, attackingTerritory, defendingTerritory);
-                            }
-                            catch (Exception ex)
-                            {
-                                attackResult = new TryAttackResult { AttackInvalid = true, Message=ex.Message };
-                            }
-                            if (attackResult.AttackInvalid)
-                            {
-                                logger.LogError($"Invalid attack request! {currentPlayer.Name} from {attackingTerritory} to {defendingTerritory} ");
-                                failedTries++;
-                                if (failedTries == MaxFailedTries)
+                                var beginAttackResponse = await askForAttackLocationAsync(currentPlayer, BeginAttackStatus.PreviousAttackRequestFailed);
+                                try
                                 {
-                                    BootPlayerFromGame(currentPlayer);
-                                    i--;
+                                    attackingTerritory = game.Board.GetTerritory(beginAttackResponse.From);
+                                    defendingTerritory = game.Board.GetTerritory(beginAttackResponse.To);
+
+                                    logger.LogInformation($"{currentPlayer.Name} wants to attack from {attackingTerritory} to {defendingTerritory}");
+
+                                    attackResult = game.TryAttack(currentPlayer.Token, attackingTerritory, defendingTerritory);
+                                }
+                                catch (Exception ex)
+                                {
+                                    attackResult = new TryAttackResult { AttackInvalid = true, Message = ex.Message };
+                                }
+                                if (attackResult.AttackInvalid)
+                                {
+                                    logger.LogError($"Invalid attack request! {currentPlayer.Name} from {attackingTerritory} to {defendingTerritory} ");
+                                    failedTries++;
+                                    if (failedTries == MaxFailedTries)
+                                    {
+                                        BootPlayerFromGame(currentPlayer);
+                                        i--;
+                                        break;
+                                    }
+                                }
+                            } while (attackResult.AttackInvalid);
+
+                            while (attackResult.CanContinue)
+                            {
+                                var continueResponse = await askContinueAttackingAsync(currentPlayer, attackingTerritory, defendingTerritory);
+                                if (continueResponse.ContinueAttacking)
+                                {
+                                    logger.LogInformation("Keep attacking!");
+                                    attackResult = game.TryAttack(currentPlayer.Token, attackingTerritory, defendingTerritory);
+                                }
+                                else
+                                {
+                                    logger.LogInformation("run away!");
                                     break;
                                 }
                             }
-                        } while (attackResult.AttackInvalid);
-
-                        while (attackResult.CanContinue)
+                        }
+                        else if (actionResponse.userAction == UserAction.Pacifism)
                         {
-                            var continueResponse = await askContinueAttackingAsync(currentPlayer, attackingTerritory, defendingTerritory);
-                            if (continueResponse.ContinueAttacking)
+                            consecutivePacifistTurns++;
+                            if (consecutivePacifistTurns == game.Players.Count())
                             {
-                                logger.LogInformation("Keep attacking!");
-                                attackResult = game.TryAttack(currentPlayer.Token, attackingTerritory, defendingTerritory);
-                            }
-                            else
-                            {
-                                logger.LogInformation("run away!");
-                                break;
+                                logger.LogInformation("Game Over");
+                                game.SetGameOver();
+                                return;
                             }
                         }
+
                     }
                     else
                     {
@@ -159,6 +178,16 @@ namespace Risk.Api
             removedPlayers.Add(player);
         }
 
+        //pacifism 
+        private async Task<ActionResponse> askForActionAsync(ApiPlayer player, ActionStatus actionStatus)
+        {
+            var actionRequest = new ActionRequest {
+                Status = actionStatus
+            };
+            return await (await player.HttpClient.PostAsJsonAsync("/beginAction", actionRequest))
+                   .EnsureSuccessStatusCode()
+                   .Content.ReadFromJsonAsync<ActionResponse>();
+        }
         private async Task<BeginAttackResponse> askForAttackLocationAsync(ApiPlayer player, BeginAttackStatus beginAttackStatus)
         {
             var beginAttackRequest = new BeginAttackRequest {

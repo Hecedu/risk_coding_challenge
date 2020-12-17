@@ -1,0 +1,13 @@
+﻿@page
+@model Risk.HMClient.Pages.IndexModel
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+@{
+}
+
+Hello, this is the index page.
+<br />Enter server address to join API:
+<form action="/joinServer" method="post">
+    <input type=text name="server" value="http://localhost:5000" />
+    <button type="submit">Join Server</button>
+</form>
