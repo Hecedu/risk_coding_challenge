@@ -87,6 +87,8 @@ namespace Risk.HMClient.Controllers
             return new DeployArmyResponse { DesiredLocation = attacklocation };
 
         }
+
+        //The next two functions handle pacifism randomly.
         [HttpPost("beginAction")]
         public ActionResponse BeginAction ([FromBody] ActionRequest actionRequest)
         {
@@ -107,6 +109,7 @@ namespace Risk.HMClient.Controllers
             return response;
 
         }
+
 
         [HttpPost("beginAttack")]
         public BeginAttackResponse BeginAttack([FromBody] BeginAttackRequest beginAttackRequest)
@@ -152,6 +155,8 @@ namespace Risk.HMClient.Controllers
             return null;
         }
 
+
+        //The next two functions handle continue attacking randomly.
         [HttpPost("continueAttacking")]
         public ContinueAttackResponse ContinueAttack([FromBody] ContinueAttackRequest continueAttackRequest)
         {
