@@ -145,5 +145,22 @@ namespace Risk.Api.Controllers
 
             return Ok();
         }
+
+
+        [HttpGet("[action]")]
+        public IActionResult GameOverStats()
+        {
+            
+
+            if (game.GameState == GameState.GameOver)
+            {
+                GameOverRequest gameOverRequest;
+
+                gameOverRequest = gameRunner.reportWinner();
+                return Ok(gameOverRequest);
+            }
+
+            return Ok();
+        }
     }
 }

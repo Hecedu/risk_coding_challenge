@@ -37,7 +37,7 @@ namespace Risk.Api
 
             await deployArmiesAsync();
             await doBattle();
-            await reportWinner();
+            reportWinner();
         }
 
 
@@ -206,7 +206,7 @@ namespace Risk.Api
                 .Content.ReadFromJsonAsync<BeginAttackResponse>();
         }
 
-        private async Task reportWinner()
+        public GameOverRequest reportWinner()
         {
             game.EndTime = DateTime.Now;
             TimeSpan gameDuration = game.EndTime - game.StartTime;
@@ -229,10 +229,12 @@ namespace Risk.Api
                 FinalScores = orderedScores.Select(s => $"{s.player.Name} ({s.score})")
             };
 
-            foreach (ApiPlayer currentPlayer in game.Players)
+           /* foreach (ApiPlayer currentPlayer in game.Players)
             {
                 var response = await (currentPlayer.HttpClient.PostAsJsonAsync("/gameOver", gameOverRequest));
-            }
+            }*/
+
+            return gameOverRequest;
         }
 
         public bool IsAllArmiesPlaced()

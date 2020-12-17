@@ -37,17 +37,7 @@ namespace Maksad_Client.Pages
             MaxCol = Status.Board.Max(t => t.Location.Column);
         }
 
-        /*
-                public async Task<IActionResult> OnGetAsync()
-                {
 
-                    string url = "http://localhost:5050/JoinGame";
-
-                    System.Uri uri = new System.Uri(url);
-
-                    return Redirect(uri.ToString());
-                }
-        */
         public async Task<IActionResult> OnPostStartGameAsync()
         {
             var client = httpClientFactory.CreateClient();

@@ -22,12 +22,7 @@ namespace Visualizer.Pages
         private readonly IMemoryCache memoryCache;
 
 
-        /*public PlayByPlayModeModel(IHttpClientFactory httpClientFactory, IConfiguration configuration, PlayByPlayModel playByPlayModel)
-        {
-            this.httpClientFactory = httpClientFactory;
-            this.configuration = configuration;
-            this.playByPlayModel = playByPlayModel;
-        }*/
+    
 
         public PlayByPlayModeModel(IHttpClientFactory httpClientFactory, IConfiguration configuration, IMemoryCache memoryCache)
         {

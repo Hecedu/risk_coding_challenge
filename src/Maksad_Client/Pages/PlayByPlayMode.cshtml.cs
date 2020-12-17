@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Risk.Shared;
-using Maksad_Client.Models;
+
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Maksad_Client.Pages
@@ -20,7 +20,7 @@ namespace Maksad_Client.Pages
         private readonly IHttpClientFactory httpClientFactory;
         private readonly IConfiguration configuration;
         private readonly IMemoryCache memoryCache;
-        public PlayByPlayModel playByPlayModel;
+    
 
         /*public PlayByPlayModeModel(IHttpClientFactory httpClientFactory, IConfiguration configuration, PlayByPlayModel playByPlayModel)
         {

@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using Risk.Shared;
 
 
-namespace VisualizerController.Controllers
+namespace Visualizer.Controllers
 {
     public class VisualizeController : Controller
     {

@@ -43,8 +43,6 @@
         .cell {
             min-width: 25px;
         }
-
-
     </style>
 
     <h2>Game State: @Model.CurrentStatus.GameState</h2>
@@ -53,13 +51,19 @@
 
     <form method="post" asp-page-handler="PlayByPlay">
         <button class="back-end" name="action" type="submit" value="backwardStart">Backward till start</button>
-        <button class="back-one"name="action" type="submit" value="backwardOne">Backward 1 step</button>
+        <button class="back-one" name="action" type="submit" value="backwardOne">Backward 1 step</button>
         <button class="forw-one" name="action" type="submit" value="forwardOne">Forward 1</button>
-        <button class="forw-end"name="action" type="submit" value="forwardEnd">Forward till end</button>
-
+        <button class="forw-end" name="action" type="submit" value="forwardEnd">Forward till end</button>
 
     </form>
 
+    <br />
+    <br />
+
+
+    <form method="get">
+        <button type="submit" asp-page="./Visualizer">Back to Visualizer</button>
+    </form>
 
 
     <!--Player Stats-->

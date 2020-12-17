@@ -31,16 +31,16 @@ namespace Risk.SampleClient.Pages
 
 
 
-        /*        public async Task OnGetAsync()
-                {
-                    Status = await httpClientFactory
-                        .CreateClient()
-                        .GetFromJsonAsync<GameStatus>($"{configuration["GameServer"]}/status");
-                    MaxRow = Status.Board.Max(t => t.Location.Row);
-                    MaxCol = Status.Board.Max(t => t.Location.Column);
-                }*/
+        public async Task OnGetAsync()
+        {
+            Status = await httpClientFactory
+                .CreateClient()
+                .GetFromJsonAsync<GameStatus>($"{configuration["GameServer"]}/status");
+            MaxRow = Status.Board.Max(t => t.Location.Row);
+            MaxCol = Status.Board.Max(t => t.Location.Column);
+        }
 
-        
+/*
         public async Task<IActionResult> OnGetAsync()
         {
 
@@ -49,7 +49,7 @@ namespace Risk.SampleClient.Pages
             System.Uri uri = new System.Uri(url);
 
             return Redirect(uri.ToString());
-        }
+        }*/
 
         public async Task<IActionResult> OnPostStartGameAsync()
         {

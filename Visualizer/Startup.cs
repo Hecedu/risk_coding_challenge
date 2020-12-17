@@ -35,9 +35,8 @@ namespace Visualizer
             services.AddControllers();
             services.AddHttpClient();
             services.AddRazorPages();
-            services.AddSession(options => {
-                options.IdleTimeout = TimeSpan.FromMinutes(5);
-            });
+            services.AddMemoryCache();
+            services.AddSession();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -55,7 +54,6 @@ namespace Visualizer
             app.UseSession();
 
             app.UseStaticFiles();
-
 
             app.UseEndpoints(endpoints =>
             {
