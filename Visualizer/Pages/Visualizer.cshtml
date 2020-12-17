@@ -39,27 +39,36 @@
     }
 </style>
 
-<h2>
-    Game State: @Model.Status.GameState</h3>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+</head>
+
+
+
+<body>
+
+    <h3>
+        Game State: @Model.Status.GameState
+    </h3>
 
     @if (@Model.Status.GameState == Risk.Shared.GameState.GameOver)
     {
         <form method="get">
             <button type="submit" asp-page="./PlayByPlay">View Game Step By Step</button>
         </form>
-    }
 
-
-   
-
-
-    @if (Model.Status.GameState == Risk.Shared.GameState.GameOver)
-    {
         <form method="post" asp-page-handler="RestartGame">
             <button type="submit">Restart</button>
         </form>
+
+        <p>@Model.gameOverRequest.WinnerName is Winner! </p>
+        <p> Game took: @Model.gameOverRequest.GameDuration s </p>
     }
 
+
+    <p>Final Scores: </p>
     <div class="playerStats">
         <table cellpadding="2px, 10px">
             <thead>
@@ -79,6 +88,8 @@
             }
         </table>
     </div>
+
+
 
     <div class="grid-container">
         <table border="1px" cellpadding="10px">
@@ -101,3 +112,6 @@
     </div>
 
 
+</body>
+
+</html>

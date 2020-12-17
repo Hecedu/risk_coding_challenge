@@ -125,6 +125,13 @@ namespace Risk.Api.Controllers
             game.StartGame();
             var gameRunner = new GameRunner(game, logger);
             await gameRunner.StartGameAsync();
+
+            GameOverRequest gameOverRequest = await gameRunner.reportWinner();
+
+            MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions();
+            cacheEntryOptions.AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(360);
+            memoryCache.Set("ReportWinner", gameOverRequest, cacheEntryOptions);
+            //Create a session and store the gameRunner.winnerReport
             return Ok();
         }
 
@@ -148,15 +155,14 @@ namespace Risk.Api.Controllers
 
 
         [HttpGet("[action]")]
-        public IActionResult GameOverStats()
+        public async Task<IActionResult> GameOverStats()
         {
-            
 
             if (game.GameState == GameState.GameOver)
             {
                 GameOverRequest gameOverRequest;
 
-                gameOverRequest = gameRunner.reportWinner();
+                gameOverRequest = memoryCache.Get<GameOverRequest>("ReportWinner");
                 return Ok(gameOverRequest);
             }
 

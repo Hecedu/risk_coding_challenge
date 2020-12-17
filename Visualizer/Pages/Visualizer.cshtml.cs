@@ -32,7 +32,8 @@ namespace Visualizer.Pages
         public int MaxRow { get; private set; }
         public int MaxCol { get; private set; }
 
-        
+        public GameOverRequest gameOverRequest { get; set; }
+
 
 
         public async Task OnGetAsync()
@@ -42,9 +43,14 @@ namespace Visualizer.Pages
                 .GetFromJsonAsync<GameStatus>($"{configuration["GameServer"]}/status");
             MaxRow = Status.Board.Max(t => t.Location.Row);
             MaxCol = Status.Board.Max(t => t.Location.Column);
-
-
             
+
+            if(Status.GameState == GameState.GameOver)
+            {
+                gameOverRequest = await httpClientFactory
+               .CreateClient()
+               .GetFromJsonAsync<GameOverRequest>($"{configuration["GameServer"]}/GameOverStats");
+            }
         }
 
 
@@ -64,6 +70,16 @@ namespace Visualizer.Pages
 
             return RedirectToPage("JoinGame");
         }
+
+
+       /* public async Task<IActionResult> GameOver()
+        {
+            gameOverRequest = await httpClientFactory
+               .CreateClient()
+               .GetFromJsonAsync<GameOverRequest>($"{configuration["GameServer"]}/GameOverStats");
+
+            return RedirectToPage("Visualizer");
+        }*/
 
     }
 }
